@@ -8,16 +8,16 @@ namespace Assembler.Logic
 {
 	class Program
 	{
-		private List<Instruction> program;
+		private List<IInstruction> program;
 		private MemoryManager memoryManager;
 
 		public Program()
 		{
-			program = new List<Instruction>();
+			program = new List<IInstruction>();
 			memoryManager = new MemoryManager();
 		}
 
-		public void Add(Instruction instruction)
+		public void Add(IInstruction instruction)
 		{
 			program.Add(instruction);
 			if (instruction is Definition)
@@ -33,6 +33,19 @@ namespace Assembler.Logic
 				var label = instruction as Label;
 				memoryManager.DeclareLabel(label.Name);
 			}
+		}
+
+		public byte[] Assemble()
+		{
+			memoryManager.ResetPointer();
+			var code = new List<byte>();
+			foreach(var instruction in program)
+			{
+				var instrCode = instruction.Assemble(memoryManager);
+				memoryManager.MovePointer((Int16)instrCode.Length);
+				code.AddRange(instrCode);
+			}
+			return code.ToArray();
 		}
 	}
 }

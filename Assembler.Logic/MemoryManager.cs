@@ -15,11 +15,19 @@ namespace Assembler.Logic
 		public MemoryManager()
 		{
 			Pointer = 0;
+			Labels = new Dictionary<string, Int16>();
+			Variables = new Dictionary<string, Int16>();
 		}
 
 		public Int16 MovePointer(Int16 offset)
 		{
 			Pointer += offset;
+			return Pointer;
+		}
+
+		public Int16 ResetPointer(Int16 value = 0)
+		{
+			Pointer = value;
 			return Pointer;
 		}
 

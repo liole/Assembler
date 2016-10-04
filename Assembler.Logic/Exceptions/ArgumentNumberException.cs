@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic.Exceptions
 {
-	class ArgumentNumberException: CommandException
+	public class ArgumentNumberException: CommandException
 	{
 		public int NumberOfArguments { get; set; }
 

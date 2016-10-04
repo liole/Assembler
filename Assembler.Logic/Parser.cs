@@ -6,42 +6,40 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic
 {
-	class Parser: IDisposable
+	class Parser
 	{
-		private Lexer lexer;
+		public string Text { get; set; }
 
 		public Parser(string text)
 		{
-			lexer = new Lexer(text);
+			Text = text;
 		}
 
 		public Program Parse()
 		{
 			var program = new Program();
-			while (lexer.NextLine())
+			using (var lexer = new Lexer(Text))
 			{
-				if (lexer.HasLabel)
+				while (lexer.NextLine())
 				{
-					program.Add(new Label(lexer.Label));
-				}
-				switch (lexer.Type)
-				{
-					case Lexer.LineType.Command:
-						var commandName = lexer.Command;
-						var command = Commands.Creator.Create(commandName, lexer);
-						program.Add(command);
-						break;
-					case Lexer.LineType.Definition:
+					if (lexer.HasLabel)
+					{
+						program.Add(new Label(lexer.Label));
+					}
+					switch (lexer.Type)
+					{
+						case Lexer.LineType.Command:
+							var commandName = lexer.Command;
+							var command = Commands.Creator.Create(commandName, lexer);
+							program.Add(command);
+							break;
+						case Lexer.LineType.Definition:
 
-						break;
+							break;
+					}
 				}
 			}
 			return program;
-		}
-
-		public void Dispose()
-		{
-			lexer.Dispose();
 		}
 	}
 }

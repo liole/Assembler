@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assembler.Logic
+namespace Assembler.Logic.Arguments
 {
-	class Instruction
+	public interface IArgument
 	{
+		bool IsWord { get; }
 	}
 }

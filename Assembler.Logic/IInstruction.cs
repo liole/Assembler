@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assembler.Logic.Arguments
+namespace Assembler.Logic
 {
-	public class Argument
+	interface IInstruction
 	{
+		byte[] Assemble(MemoryManager mgr);
 	}
 }

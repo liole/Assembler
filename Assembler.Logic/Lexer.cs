@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic
 {
-	class Lexer: IDisposable, ILineInfo
+	public class Lexer: IDisposable, ILineInfo
 	{
 		private Regex regex;
 		private StringReader reader;
@@ -76,7 +76,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["command"];
-				return match.Success ? match.Value.ToLower() : null;
+				return group.Success ? group.Value.ToLower() : null;
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["definition"];
-				return match.Success ? match.Value.ToLower() : null;
+				return group.Success ? group.Value.ToLower() : null;
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["comment"];
-				return match.Success ? match.Value : null;
+				return group.Success ? group.Value : null;
 			}
 		}
 
@@ -122,7 +122,7 @@ namespace Assembler.Logic
 			}
 			var name = String.Format("argument{0}", n);
 			var group = match.Groups[name];
-			return match.Success ? match.Value : null;
+			return group.Success ? group.Value : null;
 		}
 
 		private bool isGroupIn(Capture capt, string name)
@@ -261,7 +261,7 @@ namespace Assembler.Logic
 			None, Number, String
 		}
 
-		static string DEC_NUMBER = "(?<number_dec>\\-[0-9]+)d?";
+		static string DEC_NUMBER = "(?<number_dec>\\-?[0-9]+)d?";
 		static string BIN_NUMBER = "(?<number_bin>[01]+)b";
 		static string HEX_NUMBER = "(?<number_hex>[0-9][0-9a-f]*)h";
 		static string NUMBER = $"(?<number>{BIN_NUMBER}|{HEX_NUMBER}|{DEC_NUMBER})";
@@ -271,7 +271,8 @@ namespace Assembler.Logic
 		static string LITERAL = $"(?<literal>{STRING_LITERAL}|{NUMBER})";
 		static string REGISTER = "(?<register>ax|bx|cx|dx|sp|bp|si|di|al|bl|cl|dl|ah|bh|ch|dh)";
 		static string NAME = "(?<name>[a-z_][a-z_0-9]*)";
-		static string COMMAND = "(?<command>mov|add)";
+		static string COMMAND_LIST = String.Join("|", Commands.Creator.List);
+		static string COMMAND = $"(?<command>{COMMAND_LIST})";
 		static string DEFINITION = "(?<definition>db|dw)";
 		static string DEFINE_LINE = $"(?:{NAME}\\s+)?{DEFINITION}\\s+(?<value>{LITERAL}|\\?)";
 		static string ARGUMENT = $"{REGISTER}|{NUMBER}|{NAME}";

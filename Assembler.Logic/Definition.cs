@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic
 {
-	class Definition: Instruction
+	class Definition: IInstruction
 	{
 		public string Name { get; set; }
+
+		public byte[] Assemble(MemoryManager mgr)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
