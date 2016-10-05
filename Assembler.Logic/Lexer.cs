@@ -263,7 +263,9 @@ namespace Assembler.Logic
 
 		static string DEC_NUMBER = "(?<number_dec>\\-?[0-9]+)d?";
 		static string BIN_NUMBER = "(?<number_bin>[01]+)b";
-		static string HEX_NUMBER = "(?<number_hex>[0-9][0-9a-f]*)h";
+		static string HEX_NUMBER_1 = "(?<number_hex>[0-9][0-9a-f]*)h";
+		static string HEX_NUMBER_2 = "0x(?<number_hex>[0-9a-f]+)";
+		static string HEX_NUMBER = $"{HEX_NUMBER_1}|{HEX_NUMBER_2}";
 		static string NUMBER = $"(?<number>{BIN_NUMBER}|{HEX_NUMBER}|{DEC_NUMBER})";
 		static string STRING_LITERAL_1 = "'(?<string_literal>[^']*)'";
 		static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"]*)\"";

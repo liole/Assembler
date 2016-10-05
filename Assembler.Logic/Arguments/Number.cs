@@ -19,8 +19,25 @@ namespace Assembler.Logic.Arguments
 		{
 			get
 			{
-				return Value >> 8 != 0;
+				//return Value >> 8 != 0;
+				var b = (byte)Value;
+				return (byte)Value != Value && (sbyte)Value != Value;
 			}
+		}
+
+		public byte GetByte()
+		{
+			return (byte)Value;
+		}
+
+		public byte[] GetReverseWord()
+		{
+			return new[] { (byte)Value, (byte)(Value >> 8) };
+		}
+
+		public byte[] GetValue(bool word)
+		{
+			return word ? GetReverseWord() : new[] { GetByte() };
 		}
 	}
 }

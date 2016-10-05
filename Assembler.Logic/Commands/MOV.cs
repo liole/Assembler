@@ -27,19 +27,27 @@ namespace Assembler.Logic.Commands
 
 		public byte[] AssembleRR(MemoryManager mgr)
 		{
-			byte cmd = 0x8a;
+			byte cmd = 0x88;
 			var w = CheckArgumentSize();
 			var cmdw = (byte)(cmd | (w ? 1 : 0));
 			byte mod = 0x03;
-			var reg = (Argument1 as Register).Code;
-			var rm = (Argument2 as Register).Code;
+			var reg = (Argument2 as Register).Code;
+			var rm = (Argument1 as Register).Code;
 			var modrm = Command.GetAddressingMode(mod, reg, rm);
 			return new[] { cmdw, modrm };
 		}
 
 		public byte[] AssembleRI(MemoryManager mgr)
 		{
-			throw new NotImplementedException();
+			byte cmd = 0xb0;
+			var w = CheckArgumentSize();
+			var cmdw = (byte)(cmd | ((w ? 1 : 0) << 3));
+			var reg = (Argument1 as Register).Code;
+			var cmdwreg = (byte)(cmdw | reg);
+			var im = (Argument2 as Number).GetValue(w);
+			var res = new List<byte>() { cmdwreg };
+			res.AddRange(im);
+			return res.ToArray();
 		}
 		
 		public static MOV Create(ILineInfo line)
