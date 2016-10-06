@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic.Arguments
 {
-	public class Register: IArgument
+	class Register: IArgument
 	{
 		public string Type { get; set; }
 

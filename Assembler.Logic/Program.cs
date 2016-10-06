@@ -25,7 +25,11 @@ namespace Assembler.Logic
 				var definition = instruction as Definition;
 				if (definition.Name != null)
 				{
-					memoryManager.DeclareVariable(definition.Name);
+					if (memoryManager.Variables.ContainsKey(definition.Name))
+					{
+						throw new Exceptions.VariableRedeclaredException(definition.LineNumber, definition.Name);
+					}
+					memoryManager.DeclareVariable(definition.Name, definition.Type);
 				}
 			}
 			if (instruction is Label)

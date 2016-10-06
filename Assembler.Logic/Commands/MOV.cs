@@ -22,10 +22,10 @@ namespace Assembler.Logic.Commands
 			{
 				return true;
 			}
-			throw new Exceptions.ArgumentSizeException(0, "MOV"); // get line number from somewhere ...
+			throw new Exceptions.ArgumentSizeException(LineNumber, "MOV");
 		}
 
-		public byte[] AssembleRR(MemoryManager mgr)
+		byte[] assembleRR(MemoryManager mgr)
 		{
 			byte cmd = 0x88;
 			var w = CheckArgumentSize();
@@ -37,7 +37,7 @@ namespace Assembler.Logic.Commands
 			return new[] { cmdw, modrm };
 		}
 
-		public byte[] AssembleRI(MemoryManager mgr)
+		byte[] assembleRI(MemoryManager mgr)
 		{
 			byte cmd = 0xb0;
 			var w = CheckArgumentSize();
@@ -56,7 +56,10 @@ namespace Assembler.Logic.Commands
 			{
 				throw new Exceptions.ArgumentNumberException(line.LineNumber, "MOV", line.NumberOfArguments);
 			}
-			var cmd = new MOV();
+			var cmd = new MOV()
+			{
+				LineNumber = line.LineNumber
+			};
 			switch (line.TypeOfArgument(1))
 			{
 				case Lexer.ArgumentType.Register:
@@ -65,11 +68,11 @@ namespace Assembler.Logic.Commands
 					{
 						case Lexer.ArgumentType.Register:
 							cmd.Argument2 = new Register(line.Argument(2));
-							cmd.Assemble = cmd.AssembleRR;
+							cmd.Assemble = cmd.assembleRR;
 							break;
 						case Lexer.ArgumentType.Number:
 							cmd.Argument2 = new Number((Int16)line.ArgumentAsNumber(2));
-							cmd.Assemble = cmd.AssembleRI;
+							cmd.Assemble = cmd.assembleRI;
 							break;
 						case Lexer.ArgumentType.Name:
 							break;

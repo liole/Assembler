@@ -14,10 +14,17 @@ namespace Assembler.Logic.Commands
 		{
 			commands = new Dictionary<string, Func<ILineInfo, Command>>();
 			commands["mov"] = MOV.Create;
+			commands["org"] = ORG.Create;
+			commands["int"] = INT.Create;
+			commands["lea"] = LEA.Create;
 		}
 
 		public static Command Create(string command, ILineInfo line)
 		{
+			if (!commands.ContainsKey(command))
+			{
+				throw new Exceptions.NotACommandException(line.LineNumber, command);
+			}
 			return commands[command](line);
 		}
 

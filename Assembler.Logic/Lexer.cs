@@ -102,27 +102,20 @@ namespace Assembler.Logic
 		{
 			get
 			{
-				if (!match.Groups["argument1"].Success)
-				{
-					return 0;
-				}
-				if (!match.Groups["argument2"].Success)
-				{
-					return 1;
-				}
-				return 2;
+				var args = match.Groups["argument"].Captures;
+				return args.Count;
 			}
 		}
 
 		public string Argument(int n)
 		{
-			if (n > 2)
+			var args = match.Groups["argument"].Captures;
+			if (n > args.Count)
 			{
 				return null;
 			}
-			var name = String.Format("argument{0}", n);
-			var group = match.Groups[name];
-			return group.Success ? group.Value : null;
+			var group = args[n-1];
+			return group.Value;
 		}
 
 		private bool isGroupIn(Capture capt, string name)
@@ -141,16 +134,12 @@ namespace Assembler.Logic
 
 		public ArgumentType TypeOfArgument(int n)
 		{
-			if (n > 2)
+			var args = match.Groups["argument"].Captures;
+			if (n > args.Count)
 			{
 				return ArgumentType.None;
 			}
-			var name = String.Format("argument{0}", n);
-			var group = match.Groups[name];
-			if (!group.Success)
-			{
-				return ArgumentType.None;
-			}
+			var group = args[n-1];
 			if (isGroupIn(group, "number"))
 			{
 				return ArgumentType.Number;
@@ -184,7 +173,7 @@ namespace Assembler.Logic
 			return ValueType.None; // should never get here
 		}
 
-		private Int16? groupAsNumber(Group group)
+		private Int16? groupAsNumber(Capture group)
 		{
 			if (!isGroupIn(group, "number"))
 			{
@@ -199,7 +188,7 @@ namespace Assembler.Logic
 				}
 				if ((capture = getGroupInside(group, "number_bin")) != null)
 				{
-					return Convert.ToInt16(capture.Value, 16);
+					return Convert.ToInt16(capture.Value, 2);
 				}
 				if ((capture = getGroupInside(group, "number_hex")) != null)
 				{
@@ -215,12 +204,12 @@ namespace Assembler.Logic
 
 		public Int16? ArgumentAsNumber(int n)
 		{
-			if (n > 2)
+			var args = match.Groups["argument"].Captures;
+			if (n > args.Count)
 			{
 				return null;
 			}
-			var name = String.Format("argument{0}", n);
-			var group = match.Groups[name];
+			var group = args[n-1];
 			return groupAsNumber(group);
 		}
 
@@ -239,6 +228,12 @@ namespace Assembler.Logic
 				return null;
 			}
 			return capture.Value;
+		}
+
+		public string GetName()
+		{
+			var group = match.Groups["name"];
+			return group.Success ? group.Value.ToLower() : null;
 		}
 
 		public void Dispose()
@@ -273,13 +268,13 @@ namespace Assembler.Logic
 		static string LITERAL = $"(?<literal>{STRING_LITERAL}|{NUMBER})";
 		static string REGISTER = "(?<register>ax|bx|cx|dx|sp|bp|si|di|al|bl|cl|dl|ah|bh|ch|dh)";
 		static string NAME = "(?<name>[a-z_][a-z_0-9]*)";
-		static string COMMAND_LIST = String.Join("|", Commands.Creator.List);
+		static string COMMAND_LIST = "[a-z]+"; //String.Join("|", Commands.Creator.List);
 		static string COMMAND = $"(?<command>{COMMAND_LIST})";
 		static string DEFINITION = "(?<definition>db|dw)";
 		static string DEFINE_LINE = $"(?:{NAME}\\s+)?{DEFINITION}\\s+(?<value>{LITERAL}|\\?)";
 		static string ARGUMENT = $"{REGISTER}|{NUMBER}|{NAME}";
-		static string COMMAND_LINE = $"{COMMAND}(?:\\s+(?<argument1>{ARGUMENT}))?(?:\\s*,\\s*(?<argument2>{ARGUMENT}))?";
-		static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{COMMAND_LINE}|{DEFINE_LINE})?\\s*(?:;(?<comment>.*))?$";
+		static string COMMAND_LINE = $"{COMMAND}(?:\\s+(?<argument>{ARGUMENT}))?(?:\\s*,\\s*(?<argument>{ARGUMENT}))*";
+		static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
 	
 	}
 }

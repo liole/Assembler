@@ -8,6 +8,7 @@ namespace Assembler.Logic
 {
 	interface IInstruction
 	{
+		int LineNumber { get; }
 		byte[] Assemble(MemoryManager mgr);
 	}
 }

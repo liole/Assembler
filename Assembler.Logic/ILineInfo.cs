@@ -8,7 +8,7 @@ namespace Assembler.Logic
 {
 	interface ILineInfo
 	{
-		int LineNumber { get; set; }
+		int LineNumber { get; }
 		Lexer.LineType Type { get; }
 
 		bool HasLabel { get; }
@@ -26,6 +26,8 @@ namespace Assembler.Logic
 		Int16? ArgumentAsNumber(int n);
 		Int16? ValueAsNumber();
 		string ValueAsString();
+
+		string GetName();
 
 	}
 }

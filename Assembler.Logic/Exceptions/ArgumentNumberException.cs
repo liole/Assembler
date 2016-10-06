@@ -20,7 +20,7 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("Command '{0}' can not have {1} argument(s).[Line {3}]",
+				return String.Format("Command '{0}' can not have {1} argument(s).[Line {2}]",
 					CommandName, NumberOfArguments, LineNumber);
 			}
 		}

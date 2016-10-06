@@ -41,19 +41,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arguments\IArgument.cs" />
+    <Compile Include="Arguments\MemoryName.cs" />
     <Compile Include="Arguments\Number.cs" />
     <Compile Include="Arguments\Register.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Creator.cs" />
+    <Compile Include="Commands\INT.cs" />
+    <Compile Include="Commands\LEA.cs" />
+    <Compile Include="Commands\ORG.cs" />
     <Compile Include="Commands\MOV.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Definition.cs" />
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentNumberException.cs" />
+    <Compile Include="Exceptions\VariableRedeclaredException.cs" />
+    <Compile Include="Exceptions\VariableNotDeclaredException.cs" />
     <Compile Include="Exceptions\ArgumentSizeException.cs" />
     <Compile Include="Exceptions\CommandException.cs" />
     <Compile Include="Exceptions\FormatException.cs" />
     <Compile Include="Exceptions\LineException.cs" />
+    <Compile Include="Exceptions\NotACommandException.cs" />
     <Compile Include="Exceptions\OverflowException.cs" />
     <Compile Include="ILineInfo.cs" />
     <Compile Include="IInstruction.cs" />

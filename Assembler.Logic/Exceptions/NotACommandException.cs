@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic.Exceptions
 {
-	public class ArgumentSizeException: CommandException
+	public class NotACommandException: CommandException
 	{
-		public ArgumentSizeException(int lineNumber, string commandName):
+		public NotACommandException(int lineNumber, string commandName) :
 			base(lineNumber, commandName)
 		{
+			CommandName = commandName;
 		}
 
 		public override string Message
 		{
 			get
 			{
-				return String.Format("Size of argument(s) for command '{0}' is incompatible.[Line {1}]",
-					CommandName, LineNumber);
+				return String.Format("Command '{0}' is not recognized[Line {1}]", CommandName, LineNumber);
 			}
 		}
 	}

@@ -11,12 +11,16 @@ namespace Assembler.Logic
 		public Int16 Pointer { get; private set; }
 		public Dictionary<string, Int16> Labels { get; private set; }
 		public Dictionary<string, Int16> Variables { get; private set; }
+		public Dictionary<string, Definition.DefinitionType> VariableTypes { get; private set; }
+
+		public static Int16 UndefinedAddress = -1; //0xffff;
 
 		public MemoryManager()
 		{
 			Pointer = 0;
 			Labels = new Dictionary<string, Int16>();
 			Variables = new Dictionary<string, Int16>();
+			VariableTypes = new Dictionary<string, Definition.DefinitionType>();
 		}
 
 		public Int16 MovePointer(Int16 offset)
@@ -33,12 +37,13 @@ namespace Assembler.Logic
 
 		public void DeclareLabel(string name)
 		{
-			Labels[name] = 0;
+			Labels[name] = UndefinedAddress;
 		}
 
-		public void DeclareVariable(string name)
+		public void DeclareVariable(string name, Definition.DefinitionType type)
 		{
-			Variables[name] = 0;
+			Variables[name] = UndefinedAddress;
+			VariableTypes[name] = type;
 		}
 
 		public Int16 DefineLabel(string name)

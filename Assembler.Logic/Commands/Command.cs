@@ -8,6 +8,7 @@ namespace Assembler.Logic.Commands
 {
 	class Command: IInstruction
 	{
+		public int LineNumber { get; set; }
 		public Func<MemoryManager, byte[]> Assemble { get; set; }
 
 		byte[] IInstruction.Assemble(MemoryManager mgr)

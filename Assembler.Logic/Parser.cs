@@ -24,7 +24,7 @@ namespace Assembler.Logic
 				{
 					if (lexer.HasLabel)
 					{
-						program.Add(new Label(lexer.Label));
+						program.Add(new Label(lexer.Label, lexer.LineNumber));
 					}
 					switch (lexer.Type)
 					{
@@ -34,7 +34,8 @@ namespace Assembler.Logic
 							program.Add(command);
 							break;
 						case Lexer.LineType.Definition:
-
+							var definition = Definition.Create(lexer);
+							program.Add(definition);
 							break;
 					}
 				}
