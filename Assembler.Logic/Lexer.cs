@@ -10,14 +10,18 @@ namespace Assembler.Logic
 {
 	public class Lexer: IDisposable, ILineInfo
 	{
-		private Regex regex;
+		private static Regex regex;
 		private StringReader reader;
 		private Match match;
 		public int LineNumber { get; set; }
 
+		static Lexer()
+		{
+			regex = new Regex(LINE, RegexOptions.Compiled|RegexOptions.IgnoreCase);
+		}
+
 		public Lexer(string text)
 		{
-			this.regex = new Regex(LINE, RegexOptions.Compiled|RegexOptions.IgnoreCase);
 			this.reader = new StringReader(text);
 			LineNumber = 0;
 		}
@@ -256,25 +260,26 @@ namespace Assembler.Logic
 			None, Number, String
 		}
 
-		static string DEC_NUMBER = "(?<number_dec>\\-?[0-9]+)d?";
-		static string BIN_NUMBER = "(?<number_bin>[01]+)b";
-		static string HEX_NUMBER_1 = "(?<number_hex>[0-9][0-9a-f]*)h";
-		static string HEX_NUMBER_2 = "0x(?<number_hex>[0-9a-f]+)";
-		static string HEX_NUMBER = $"{HEX_NUMBER_1}|{HEX_NUMBER_2}";
-		static string NUMBER = $"(?<number>{BIN_NUMBER}|{HEX_NUMBER}|{DEC_NUMBER})";
-		static string STRING_LITERAL_1 = "'(?<string_literal>[^']*)'";
-		static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"]*)\"";
-		static string STRING_LITERAL = $"{STRING_LITERAL_1}|{STRING_LITERAL_2}";
-		static string LITERAL = $"(?<literal>{STRING_LITERAL}|{NUMBER})";
-		static string REGISTER = "(?<register>ax|bx|cx|dx|sp|bp|si|di|al|bl|cl|dl|ah|bh|ch|dh)";
-		static string NAME = "(?<name>[a-z_][a-z_0-9]*)";
-		static string COMMAND_LIST = "[a-z]+"; //String.Join("|", Commands.Creator.List);
-		static string COMMAND = $"(?<command>{COMMAND_LIST})";
-		static string DEFINITION = "(?<definition>db|dw)";
-		static string DEFINE_LINE = $"(?:{NAME}\\s+)?{DEFINITION}\\s+(?<value>{LITERAL}|\\?)";
-		static string ARGUMENT = $"{REGISTER}|{NUMBER}|{NAME}";
-		static string COMMAND_LINE = $"{COMMAND}(?:\\s+(?<argument>{ARGUMENT}))?(?:\\s*,\\s*(?<argument>{ARGUMENT}))*";
-		static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
+
+		public static string DEC_NUMBER = "(?<number_dec>\\-?[0-9]+)d?";
+		public static string BIN_NUMBER = "(?<number_bin>[01]+)b";
+		public static string HEX_NUMBER_1 = "(?<number_hex>[0-9][0-9a-f]*)h";
+		public static string HEX_NUMBER_2 = "0x(?<number_hex>[0-9a-f]+)";
+		public static string HEX_NUMBER = $"{HEX_NUMBER_1}|{HEX_NUMBER_2}";
+		public static string NUMBER = $"(?<number>{BIN_NUMBER}|{HEX_NUMBER}|{DEC_NUMBER})";
+		public static string STRING_LITERAL_1 = "'(?<string_literal>[^']*)'";
+		public static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"]*)\"";
+		public static string STRING_LITERAL = $"{STRING_LITERAL_1}|{STRING_LITERAL_2}";
+		public static string LITERAL = $"(?<literal>{STRING_LITERAL}|{NUMBER})";
+		public static string REGISTER = "(?<register>ax|bx|cx|dx|sp|bp|si|di|al|bl|cl|dl|ah|bh|ch|dh)";
+		public static string NAME = "(?<name>[a-z_][a-z_0-9]*)";
+		public static string COMMAND_LIST = String.Join("|", Commands.Creator.List);
+		public static string COMMAND = $"(?<command>[a-z]+)";
+		public static string DEFINITION = "(?<definition>db|dw)";
+		public static string DEFINE_LINE = $"(?:{NAME}\\s+)?{DEFINITION}\\s+(?<value>{LITERAL}|\\?)";
+		public static string ARGUMENT = $"{REGISTER}|{NUMBER}|{NAME}";
+		public static string COMMAND_LINE = $"{COMMAND}(?:\\s+(?<argument>{ARGUMENT}))?(?:\\s*,\\s*(?<argument>{ARGUMENT}))*";
+		public static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
 	
 	}
 }

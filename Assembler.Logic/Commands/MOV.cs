@@ -49,6 +49,20 @@ namespace Assembler.Logic.Commands
 			res.AddRange(im);
 			return res.ToArray();
 		}
+
+		byte[] assembleRMR(MemoryManager mgr, byte direction)
+		{
+			byte cmd = 0x88;
+			//if (Argument1 is MemoryName)
+			var w = CheckArgumentSize();
+			var cmdw = (byte)(cmd | ((w ? 1 : 0) << 3));
+			var reg = (Argument1 as Register).Code;
+			var cmdwreg = (byte)(cmdw | reg);
+			var im = (Argument2 as Number).GetValue(w);
+			var res = new List<byte>() { cmdwreg };
+			res.AddRange(im);
+			return res.ToArray();
+		}
 		
 		public static MOV Create(ILineInfo line)
 		{

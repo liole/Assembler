@@ -28,66 +28,98 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.button2 = new System.Windows.Forms.Button();
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+			this.editor = new FastColoredTextBoxNS.FastColoredTextBox();
+			this.toolStrip = new System.Windows.Forms.ToolStrip();
+			this.compileButton = new System.Windows.Forms.ToolStripButton();
+			this.runButton = new System.Windows.Forms.ToolStripButton();
+			((System.ComponentModel.ISupportInitialize)(this.editor)).BeginInit();
+			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// textBox1
+			// editor
 			// 
-			this.textBox1.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.textBox1.Location = new System.Drawing.Point(13, 13);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(236, 236);
-			this.textBox1.TabIndex = 0;
-			this.textBox1.Text = "org 100h\r\nmov ah, 9\r\nlea dx, msg\r\nint 21h\r\n\r\nmov ax, 0x4c00\r\nint 21h\r\n\r\nmsg db \'H" +
-    "ello world!\'\r\n    db 10\r\n    db 13\r\n    db \'$\'";
-			this.textBox1.WordWrap = false;
+			this.editor.AutoCompleteBracketsList = new char[] {
+        '(',
+        ')',
+        '{',
+        '}',
+        '[',
+        ']',
+        '\"',
+        '\"',
+        '\'',
+        '\''};
+			this.editor.AutoScrollMinSize = new System.Drawing.Size(357, 168);
+			this.editor.BackBrush = null;
+			this.editor.CharHeight = 14;
+			this.editor.CharWidth = 8;
+			this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
+			this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.editor.IsReplaceMode = false;
+			this.editor.LeftPadding = 90;
+			this.editor.Location = new System.Drawing.Point(0, 25);
+			this.editor.Name = "editor";
+			this.editor.Paddings = new System.Windows.Forms.Padding(0);
+			this.editor.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
+			this.editor.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("editor.ServiceColors")));
+			this.editor.Size = new System.Drawing.Size(584, 447);
+			this.editor.TabIndex = 4;
+			this.editor.Text = "org 100h\r\nmov ah, 9\r\nlea dx, msg\r\nint 21h\r\n\r\nmov ax, 0x4c00 ; exit program\r\nint 2" +
+    "1h\r\n\r\nmsg db \'Hello world!\'\r\n    db 10\r\n    db 13\r\n    db \'$\'";
+			this.editor.Zoom = 100;
+			this.editor.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.editor_TextChanged);
+			this.editor.PaintLine += new System.EventHandler<FastColoredTextBoxNS.PaintLineEventArgs>(this.editor_PaintLine);
 			// 
-			// textBox2
+			// toolStrip
 			// 
-			this.textBox2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.textBox2.Location = new System.Drawing.Point(336, 131);
-			this.textBox2.Multiline = true;
-			this.textBox2.Name = "textBox2";
-			this.textBox2.Size = new System.Drawing.Size(236, 118);
-			this.textBox2.TabIndex = 1;
+			this.toolStrip.BackColor = System.Drawing.Color.White;
+			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.compileButton,
+            this.runButton});
+			this.toolStrip.Location = new System.Drawing.Point(0, 0);
+			this.toolStrip.Name = "toolStrip";
+			this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStrip.Size = new System.Drawing.Size(584, 25);
+			this.toolStrip.TabIndex = 5;
+			this.toolStrip.Text = "toolStrip";
 			// 
-			// button1
+			// compileButton
 			// 
-			this.button1.Location = new System.Drawing.Point(255, 131);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(75, 118);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "-- >";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
+			this.compileButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.compileButton.Image = ((System.Drawing.Image)(resources.GetObject("compileButton.Image")));
+			this.compileButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.compileButton.Name = "compileButton";
+			this.compileButton.Size = new System.Drawing.Size(23, 22);
+			this.compileButton.Text = "Compile";
+			this.compileButton.Click += new System.EventHandler(this.compileButton_Click);
 			// 
-			// button2
+			// runButton
 			// 
-			this.button2.Location = new System.Drawing.Point(255, 13);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(317, 113);
-			this.button2.TabIndex = 3;
-			this.button2.Text = "RUN";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
+			this.runButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.runButton.Image = ((System.Drawing.Image)(resources.GetObject("runButton.Image")));
+			this.runButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.runButton.Name = "runButton";
+			this.runButton.Size = new System.Drawing.Size(23, 22);
+			this.runButton.Text = "Run";
+			this.runButton.Click += new System.EventHandler(this.runButton_Click);
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(584, 261);
-			this.Controls.Add(this.button2);
-			this.Controls.Add(this.button1);
-			this.Controls.Add(this.textBox2);
-			this.Controls.Add(this.textBox1);
+			this.ClientSize = new System.Drawing.Size(584, 472);
+			this.Controls.Add(this.editor);
+			this.Controls.Add(this.toolStrip);
 			this.Name = "MainForm";
 			this.Text = "MainForm";
-			this.Load += new System.EventHandler(this.MainForm_Load);
+			((System.ComponentModel.ISupportInitialize)(this.editor)).EndInit();
+			this.toolStrip.ResumeLayout(false);
+			this.toolStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -95,9 +127,9 @@
 
 		#endregion
 
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.Button button2;
+		private FastColoredTextBoxNS.FastColoredTextBox editor;
+		private System.Windows.Forms.ToolStrip toolStrip;
+		private System.Windows.Forms.ToolStripButton compileButton;
+		private System.Windows.Forms.ToolStripButton runButton;
 	}
 }

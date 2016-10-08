@@ -8,12 +8,14 @@ namespace Assembler.Logic
 {
 	public class Compiler
 	{
+		public Program Program { get; set; }
+
 		public byte[] Compile(string text)
 		{
 			var parser = new Parser(text);
-			var program = parser.Parse();
-			var preCode = program.Assemble();	// pass 1 - calculate symbols addresses
-			var code = program.Assemble();		// pass 2 - get assembled code
+			Program = parser.Parse();
+			var preCode = Program.Assemble();	// pass 1 - calculate symbols addresses
+			var code = Program.Assemble();		// pass 2 - get assembled code
 			return code;
 		}
 	}

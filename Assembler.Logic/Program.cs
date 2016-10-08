@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic
 {
-	class Program
+	public class Program
 	{
 		private List<IInstruction> program;
 		private MemoryManager memoryManager;
+
+		private List<byte>[] codeLines;
 
 		public Program()
 		{
@@ -17,7 +19,7 @@ namespace Assembler.Logic
 			memoryManager = new MemoryManager();
 		}
 
-		public void Add(IInstruction instruction)
+		internal void Add(IInstruction instruction)
 		{
 			program.Add(instruction);
 			if (instruction is Definition)
@@ -39,17 +41,52 @@ namespace Assembler.Logic
 			}
 		}
 
+		private void initCodeLines()
+		{
+			int lineCount = program.Last().LineNumber;
+			codeLines = new List<byte>[lineCount];
+			for (int i = 0; i < codeLines.Length; ++i)
+			{
+				codeLines[i] = new List<byte>();
+			}
+		}
+
 		public byte[] Assemble()
 		{
 			memoryManager.ResetPointer();
-			var code = new List<byte>();
+			initCodeLines();
 			foreach(var instruction in program)
 			{
 				var instrCode = instruction.Assemble(memoryManager);
 				memoryManager.MovePointer((Int16)instrCode.Length);
-				code.AddRange(instrCode);
+				int n = instruction.LineNumber;
+				codeLines[n - 1].AddRange(instrCode);
 			}
-			return code.ToArray();
+			return Code;
+		}
+
+		public byte[][] CodeLines
+		{
+			get
+			{
+				if (codeLines == null)
+				{
+					throw new Exception("Assemble first");
+				}
+				return codeLines.Select(line => line.ToArray()).ToArray();
+			}
+		}
+
+		public byte[] Code
+		{
+			get
+			{
+				if (codeLines == null)
+				{
+					throw new Exception("Assemble first");
+				}
+				return codeLines.SelectMany(line => line).ToArray();
+			}
 		}
 	}
 }
