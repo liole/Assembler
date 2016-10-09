@@ -10,6 +10,7 @@ namespace Assembler.Logic
 	{
 		int LineNumber { get; }
 		Lexer.LineType Type { get; }
+		Lexer.CaptureInfo LastCapture { get; }
 
 		bool HasLabel { get; }
 		string Label { get; }

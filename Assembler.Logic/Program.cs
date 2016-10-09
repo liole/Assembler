@@ -8,6 +8,8 @@ namespace Assembler.Logic
 {
 	public class Program
 	{
+		public event EventHandler<Exceptions.ExceptionHandlerArgs> ExceptionHandler;
+
 		private List<IInstruction> program;
 		private MemoryManager memoryManager;
 
@@ -29,7 +31,7 @@ namespace Assembler.Logic
 				{
 					if (memoryManager.Variables.ContainsKey(definition.Name))
 					{
-						throw new Exceptions.VariableRedeclaredException(definition.LineNumber, definition.Name);
+						throw new Exceptions.VariableRedeclaredException(definition.Name);
 					}
 					memoryManager.DeclareVariable(definition.Name, definition.Type);
 				}
@@ -43,7 +45,7 @@ namespace Assembler.Logic
 
 		private void initCodeLines()
 		{
-			int lineCount = program.Last().LineNumber;
+			int lineCount = program.Count == 0 ? 0 : (program.Last().LineNumber + 1);
 			codeLines = new List<byte>[lineCount];
 			for (int i = 0; i < codeLines.Length; ++i)
 			{
@@ -57,10 +59,24 @@ namespace Assembler.Logic
 			initCodeLines();
 			foreach(var instruction in program)
 			{
-				var instrCode = instruction.Assemble(memoryManager);
-				memoryManager.MovePointer((Int16)instrCode.Length);
-				int n = instruction.LineNumber;
-				codeLines[n - 1].AddRange(instrCode);
+				try
+				{
+					var instrCode = instruction.Assemble(memoryManager);
+					memoryManager.MovePointer((Int16)instrCode.Length);
+					int n = instruction.LineNumber;
+					codeLines[n].AddRange(instrCode);
+				}
+				catch(Exceptions.LineException e)
+				{
+					if (e.CaptureInfo == null)
+					{
+						e.CaptureInfo = new Lexer.CaptureInfo()
+						{
+							LineNumber = instruction.LineNumber
+						};
+					}
+					program_ExceptionHandler(e);
+				}
 			}
 			return Code;
 		}
@@ -86,6 +102,18 @@ namespace Assembler.Logic
 					throw new Exception("Assemble first");
 				}
 				return codeLines.SelectMany(line => line).ToArray();
+			}
+		}
+
+		private void program_ExceptionHandler(Exceptions.LineException e)
+		{
+			if (ExceptionHandler != null)
+			{
+				ExceptionHandler(this, new Exceptions.ExceptionHandlerArgs(e));
+			}
+			else
+			{
+				throw e;
 			}
 		}
 	}

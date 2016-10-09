@@ -10,8 +10,8 @@ namespace Assembler.Logic.Exceptions
 	{
 		public string VariableName { get; set; }
 
-		public VariableNotDeclaredException(string varName, int lineNumber, string commandName) :
-			base(lineNumber, commandName)
+		public VariableNotDeclaredException(string varName, string commandName, Lexer.CaptureInfo capture = null) :
+			base(commandName, capture)
 		{
 			VariableName = varName;
 		}
@@ -20,8 +20,16 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("Variable '{0}' is not declared, but used in command '{1}'.[Line {2}]",
-					VariableName, CommandName, LineNumber);
+				return String.Format("Variable '{0}' is not declared, but used in command '{1}'.",
+					VariableName, CommandName);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Variable not declared error";
 			}
 		}
 	}

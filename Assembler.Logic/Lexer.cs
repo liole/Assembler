@@ -13,7 +13,22 @@ namespace Assembler.Logic
 		private static Regex regex;
 		private StringReader reader;
 		private Match match;
+		private Capture lastCapture;
+
+		public event EventHandler<Exceptions.ExceptionHandlerArgs> ExceptionHandler;
 		public int LineNumber { get; set; }
+		public CaptureInfo LastCapture
+		{
+			get
+			{
+				return new CaptureInfo()
+				{
+					LineNumber = LineNumber,
+					Index = lastCapture.Index,
+					Length = lastCapture.Length
+				};
+			}
+		}
 
 		static Lexer()
 		{
@@ -23,7 +38,7 @@ namespace Assembler.Logic
 		public Lexer(string text)
 		{
 			this.reader = new StringReader(text);
-			LineNumber = 0;
+			LineNumber = -1;
 		}
 
 		public bool NextLine()
@@ -37,7 +52,17 @@ namespace Assembler.Logic
 			match = regex.Match(line);
 			if (!match.Success)
 			{
-				throw new Exceptions.FormatException(LineNumber);
+				lastCapture = match;
+				var exception = new Exceptions.FormatException(LastCapture);
+				if (ExceptionHandler != null)
+				{
+					
+					ExceptionHandler(this, new Exceptions.ExceptionHandlerArgs(exception));
+				}
+				else
+				{
+					throw exception;
+				}
 			}
 			return true;
 		}
@@ -71,6 +96,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["label"];
+				lastCapture = group;
 				return group.Success ? group.Value.ToLower() : null;
 			}
 		}
@@ -80,6 +106,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["command"];
+				lastCapture = group;
 				return group.Success ? group.Value.ToLower() : null;
 			}
 		}
@@ -89,6 +116,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["definition"];
+				lastCapture = group;
 				return group.Success ? group.Value.ToLower() : null;
 			}
 		}
@@ -98,6 +126,7 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["comment"];
+				lastCapture = group;
 				return group.Success ? group.Value : null;
 			}
 		}
@@ -107,6 +136,11 @@ namespace Assembler.Logic
 			get
 			{
 				var args = match.Groups["argument"].Captures;
+				lastCapture = args.OfType<Capture>().LastOrDefault();
+				if (lastCapture == null)
+				{
+					lastCapture = match.Groups["command"];
+				}
 				return args.Count;
 			}
 		}
@@ -119,6 +153,7 @@ namespace Assembler.Logic
 				return null;
 			}
 			var group = args[n-1];
+			lastCapture = group;
 			return group.Value;
 		}
 
@@ -144,6 +179,7 @@ namespace Assembler.Logic
 				return ArgumentType.None;
 			}
 			var group = args[n-1];
+			lastCapture = group;
 			if (isGroupIn(group, "number"))
 			{
 				return ArgumentType.Number;
@@ -162,6 +198,7 @@ namespace Assembler.Logic
 		public ValueType TypeOfValue()
 		{
 			var group = match.Groups["value"];
+			lastCapture = group;
 			if (group.Value == "?")
 			{
 				return ValueType.None;
@@ -201,7 +238,7 @@ namespace Assembler.Logic
 			}
 			catch (OverflowException)
 			{
-				throw new Exceptions.OverflowException(LineNumber, capture.Value);
+				throw new Exceptions.OverflowException(capture.Value, LastCapture); // need LastCapture here?
 			}
 			return null;
 		}
@@ -214,18 +251,21 @@ namespace Assembler.Logic
 				return null;
 			}
 			var group = args[n-1];
+			lastCapture = group;
 			return groupAsNumber(group);
 		}
 
 		public Int16? ValueAsNumber()
 		{
 			var group = match.Groups["value"];
+			lastCapture = group;
 			return groupAsNumber(group);
 		}
 
 		public string ValueAsString()
 		{
 			var group = match.Groups["value"];
+			lastCapture = group;
 			Capture capture = getGroupInside(group, "string_literal");
 			if (capture == null)
 			{
@@ -237,6 +277,7 @@ namespace Assembler.Logic
 		public string GetName()
 		{
 			var group = match.Groups["name"];
+			lastCapture = group;
 			return group.Success ? group.Value.ToLower() : null;
 		}
 
@@ -260,6 +301,13 @@ namespace Assembler.Logic
 			None, Number, String
 		}
 
+		public class CaptureInfo
+		{
+			public int LineNumber { get; set; }
+			public int Index { get; set; }
+			public int Length { get; set; }
+		}
+
 
 		public static string DEC_NUMBER = "(?<number_dec>\\-?[0-9]+)d?";
 		public static string BIN_NUMBER = "(?<number_bin>[01]+)b";
@@ -267,8 +315,8 @@ namespace Assembler.Logic
 		public static string HEX_NUMBER_2 = "0x(?<number_hex>[0-9a-f]+)";
 		public static string HEX_NUMBER = $"{HEX_NUMBER_1}|{HEX_NUMBER_2}";
 		public static string NUMBER = $"(?<number>{BIN_NUMBER}|{HEX_NUMBER}|{DEC_NUMBER})";
-		public static string STRING_LITERAL_1 = "'(?<string_literal>[^']*)'";
-		public static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"]*)\"";
+		public static string STRING_LITERAL_1 = "'(?<string_literal>[^'\n\r]*)'";
+		public static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"\n\r]*)\"";
 		public static string STRING_LITERAL = $"{STRING_LITERAL_1}|{STRING_LITERAL_2}";
 		public static string LITERAL = $"(?<literal>{STRING_LITERAL}|{NUMBER})";
 		public static string REGISTER = "(?<register>ax|bx|cx|dx|sp|bp|si|di|al|bl|cl|dl|ah|bh|ch|dh)";

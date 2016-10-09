@@ -11,9 +11,12 @@ namespace Assembler.Logic.Arguments
 		public string Name { get; set; }
 		private MemoryManager mgr;
 
-		public MemoryName(string name)
+		public Lexer.CaptureInfo Capture { get; set; } // if not declared need to point to it
+
+		public MemoryName(string name, Lexer.CaptureInfo capture = null)
 		{
 			Name = name;
+			Capture = capture;
 		}
 
 		public bool Attach(MemoryManager mgr)

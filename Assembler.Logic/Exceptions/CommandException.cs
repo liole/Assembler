@@ -10,8 +10,8 @@ namespace Assembler.Logic.Exceptions
 	{
 		public string CommandName { get; set; }
 
-		public CommandException(int lineNumber, string commandName):
-			base(lineNumber)
+		public CommandException(string commandName, Lexer.CaptureInfo capture = null) :
+			base(capture)
 		{
 			CommandName = commandName;
 		}
@@ -20,7 +20,15 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("There is a problem with command '{0}' in line {1}", CommandName, LineNumber);
+				return String.Format("There is a problem with command '{0}'", CommandName);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Command error";
 			}
 		}
 	}

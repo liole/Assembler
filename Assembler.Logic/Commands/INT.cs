@@ -14,10 +14,6 @@ namespace Assembler.Logic.Commands
 		byte[] assemble(MemoryManager mgr)
 		{
 			byte cmd = 0xcd;
-			if (Argument1.IsWord)
-			{
-				throw new Exceptions.ArgumentSizeException(LineNumber, "INT");
-			}
 			var num = Argument1.GetByte();
 			return new byte[] { cmd, num };
 		}
@@ -26,7 +22,7 @@ namespace Assembler.Logic.Commands
 		{
 			if (line.NumberOfArguments != 1)
 			{
-				throw new Exceptions.ArgumentNumberException(line.LineNumber, "INT", line.NumberOfArguments);
+				throw new Exceptions.ArgumentNumberException("INT", line.NumberOfArguments);
 			}
 			var cmd = new INT()
 			{
@@ -36,13 +32,16 @@ namespace Assembler.Logic.Commands
 			{
 				case Lexer.ArgumentType.Number:
 					cmd.Argument1 = new Number((Int16)line.ArgumentAsNumber(1));
+					if (cmd.Argument1.IsWord)
+					{
+						throw new Exceptions.ArgumentSizeException("INT");
+					}
 					cmd.Assemble = cmd.assemble;
 					break;
 			}
 			if (cmd.Assemble == null)
 			{
-				throw new Exceptions.ArgumentException(
-					line.LineNumber, "INT", line.TypeOfArgument(1));
+				throw new Exceptions.ArgumentException("INT", line.TypeOfArgument(1));
 			}
 			return cmd;
 		}

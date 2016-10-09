@@ -10,8 +10,8 @@ namespace Assembler.Logic.Exceptions
 	{
 		public int NumberOfArguments { get; set; }
 
-		public ArgumentNumberException(int lineNumber, string commandName, int numberOfArguments):
-			base(lineNumber, commandName)
+		public ArgumentNumberException(string commandName, int numberOfArguments, Lexer.CaptureInfo capture = null) :
+			base(commandName, capture)
 		{
 			NumberOfArguments = numberOfArguments;
 		}
@@ -20,8 +20,16 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("Command '{0}' can not have {1} argument(s).[Line {2}]",
-					CommandName, NumberOfArguments, LineNumber);
+				return String.Format("Command '{0}' can not have {1} argument(s).",
+					CommandName, NumberOfArguments);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Argument number error";
 			}
 		}
 	}

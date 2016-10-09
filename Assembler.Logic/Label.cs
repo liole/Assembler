@@ -19,7 +19,8 @@ namespace Assembler.Logic
 
 		public byte[] Assemble(MemoryManager mgr)
 		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
+			return new byte[] {};
 		}
 	}
 }

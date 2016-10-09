@@ -23,7 +23,7 @@ namespace Assembler.Logic.Commands
 		{
 			if (!commands.ContainsKey(command))
 			{
-				throw new Exceptions.NotACommandException(line.LineNumber, command);
+				throw new Exceptions.NotACommandException(command);
 			}
 			return commands[command](line);
 		}

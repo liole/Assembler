@@ -22,7 +22,7 @@ namespace Assembler.Logic.Commands
 		{
 			if (line.NumberOfArguments != 1)
 			{
-				throw new Exceptions.ArgumentNumberException(line.LineNumber, "ORG", line.NumberOfArguments);
+				throw new Exceptions.ArgumentNumberException("ORG", line.NumberOfArguments);
 			}
 			var cmd = new ORG()
 			{
@@ -37,8 +37,7 @@ namespace Assembler.Logic.Commands
 			}
 			if (cmd.Assemble == null)
 			{
-				throw new Exceptions.ArgumentException(
-					line.LineNumber, "ORG", line.TypeOfArgument(1));
+				throw new Exceptions.ArgumentException("ORG", line.TypeOfArgument(1));
 			}
 			return cmd;
 		}

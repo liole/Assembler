@@ -10,8 +10,8 @@ namespace Assembler.Logic.Exceptions
 	{
 		public string Value { get; set; }
 
-		public OverflowException(int lineNumber, string value):
-			base(lineNumber)
+		public OverflowException(string value, Lexer.CaptureInfo capture = null) :
+			base(capture)
 		{
 			Value = value;
 		}
@@ -20,7 +20,15 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("Value {0} is too large for 16bit mode.[Line {1}]", Value, LineNumber);
+				return String.Format("Value {0} is too large for 16bit mode.", Value);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Overflow error";
 			}
 		}
 	}

@@ -8,17 +8,24 @@ namespace Assembler.Logic.Exceptions
 {
 	public class NotACommandException: CommandException
 	{
-		public NotACommandException(int lineNumber, string commandName) :
-			base(lineNumber, commandName)
+		public NotACommandException(string commandName, Lexer.CaptureInfo capture = null) :
+			base(commandName, capture)
 		{
-			CommandName = commandName;
 		}
 
 		public override string Message
 		{
 			get
 			{
-				return String.Format("Command '{0}' is not recognized[Line {1}]", CommandName, LineNumber);
+				return String.Format("Command '{0}' is not recognized.", CommandName);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Not a command error";
 			}
 		}
 	}

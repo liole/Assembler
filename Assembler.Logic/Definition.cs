@@ -44,7 +44,7 @@ namespace Assembler.Logic
 					var arg = new Arguments.Number((Int16)line.ValueAsNumber());
 					if (arg.IsWord && def.Type == DefinitionType.Byte)
 					{
-						throw new Exceptions.ArgumentSizeException(line.LineNumber, line.Definition);
+						throw new Exceptions.ArgumentSizeException(line.Definition);
 					}
 					def.Value = arg.GetValue(def.Type == DefinitionType.Word);
 					break;
@@ -68,6 +68,7 @@ namespace Assembler.Logic
 					}
 					break;
 			}
+			line.GetName(); // can de redefined exception later, point to variable name
 			return def;
 		}
 

@@ -10,8 +10,8 @@ namespace Assembler.Logic.Exceptions
 	{
 		public string VariableName { get; set; }
 
-		public VariableRedeclaredException(int lineNumber, string varName) :
-			base(lineNumber)
+		public VariableRedeclaredException(string varName, Lexer.CaptureInfo capture = null) :
+			base(capture)
 		{
 			VariableName = varName;
 		}
@@ -20,7 +20,15 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("Variable '{0}' is already declared.[Line {1}]", VariableName, LineNumber);
+				return String.Format("Variable '{0}' is already declared.", VariableName);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Variable rederclared error";
 			}
 		}
 	}

@@ -8,18 +8,33 @@ namespace Assembler.Logic.Exceptions
 {
 	public class LineException: Exception
 	{
-		public int LineNumber { get; set; }
-
-		public LineException(int lineNumber)
+		public Lexer.CaptureInfo CaptureInfo { get; set; }
+		public int LineNumber
 		{
-			LineNumber = lineNumber;
+			get
+			{
+				return CaptureInfo.LineNumber;
+			}
+		}
+
+		public LineException(Lexer.CaptureInfo capture = null)
+		{
+			CaptureInfo = capture;
 		}
 
 		public override string Message
 		{
 			get
 			{
-				return String.Format("There is a problem in line {0}", LineNumber);
+				return String.Format("There is a problem in line {0}", LineNumber + 1);
+			}
+		}
+
+		public virtual string ErrorName
+		{
+			get
+			{
+				return "Line error";
 			}
 		}
 	}

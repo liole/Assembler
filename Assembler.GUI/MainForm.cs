@@ -31,37 +31,50 @@ namespace Assembler.GUI
 			InitializeComponent();
 		}
 
-		private void build()
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+			compile();
+		}
+
+		private bool compile()
 		{
 			var text = editor.Text;
 			compiler.Compile(text);
 			codeLines = compiler.Program.CodeLines;
+			markErros();
 			editor.Invalidate();
+			return compiler.Exceptions.Count == 0;
 		}
 
-		private void compile()
+		private bool build()
 		{
-			build();
-			System.IO.File.WriteAllBytes("PGM.COM", compiler.Program.Code);
+			if (compile())
+			{
+				System.IO.File.WriteAllBytes("PGM.COM", compiler.Program.Code);
+				return true;
+			}
+			return false;
 		}
 
 		private void run()
 		{
-			compile();
-			System.IO.File.WriteAllText("PGM.BAT", @"
-@echo off
+			if (build())
+			{
+				System.IO.File.WriteAllText("PGM.BAT",
+@"@echo off
 CLS
 PGM
 PAUSE
-EXIT
-			");
-			System.Diagnostics.Process.Start(@"C:\Program Files (x86)\DOSBox-0.74\dosbox", "PGM.BAT -noconsole");
+EXIT"
+				);
+				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\DOSBox-0.74\dosbox", "PGM.BAT -noconsole");
+			}
 		}
 
 		private void drawCodeBox(PaintLineEventArgs e)
 		{
-			var firstLine = editor.VisibleRange.First().iLine;
-			if (e.LineIndex == firstLine)
+			var firstLine = editor.VisibleRange.Count() == 0 ? -1 : editor.VisibleRange.First().iLine;
+			if (firstLine == -1 || e.LineIndex == firstLine)
 			{
 				e.Graphics.DrawLine(
 					Pens.DimGray, 
@@ -99,7 +112,6 @@ EXIT
 			
 		}
 
-		private int oldLineCount = 0;
 		private void editor_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			e.ChangedRange.ClearStyle(commentStyle, stringStyle, keywordStyle, registerStyle, numberStyle);
@@ -110,21 +122,98 @@ EXIT
 			e.ChangedRange.SetStyle(registerStyle, "\\b" + Lexer.REGISTER + "\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(numberStyle, "\\b" + Lexer.NUMBER + "\\b", RegexOptions.IgnoreCase);
 
-			if (oldLineCount != editor.LinesCount)
-			{
-				build();
-			}
-			oldLineCount = editor.LinesCount;
 		}
 
-		private void compileButton_Click(object sender, EventArgs e)
+		private int oldLine = 0;
+		private void editor_SelectionChanged(object sender, EventArgs e)
 		{
-			compile();
+			var newLine = editor.Selection.FromLine;
+			if (oldLine != newLine)
+			{
+				compile();
+			}
+			oldLine = newLine;
+		}
+
+		private void markErros()
+		{
+			editor.Range.ClearStyle(errorlineStyle);
+			foreach(var e in compiler.Exceptions)
+			{
+				var capture = e.CaptureInfo;
+				Range range = null;
+				if (e.CaptureInfo.Length == 0)
+				{
+					range = editor.GetLine(capture.LineNumber);
+				}
+				else
+				{
+					range = editor.GetRange(
+						new Place(capture.Index, capture.LineNumber),
+						new Place(capture.Index + capture.Length, capture.LineNumber)
+					);
+				}
+				range.SetStyle(errorlineStyle);
+			}
+		}
+
+		private void editor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e)
+		{
+			var error = compiler.Exceptions.FirstOrDefault(ex => 
+				ex.CaptureInfo.LineNumber == e.Place.iLine && (
+					ex.CaptureInfo.Length == 0 || (
+						ex.CaptureInfo.Index <= e.Place.iChar &&
+						ex.CaptureInfo.Index + ex.CaptureInfo.Length >= e.Place.iChar
+					)
+				)
+			);
+			if (error != null)
+			{
+				e.ToolTipTitle = error.ErrorName;
+				e.ToolTipText = error.Message;
+				e.ToolTipIcon = ToolTipIcon.Error;
+			}
+		}
+
+		private void buildButton_Click(object sender, EventArgs e)
+		{
+			build();
 		}
 
 		private void runButton_Click(object sender, EventArgs e)
 		{
 			run();
+		}
+
+		private Point? mouse = null;
+		private void editor_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (Math.Abs(e.X - editor.LeftPadding) < 2)
+			{
+				mouse = e.Location;
+			}
+		}
+
+		private void editor_MouseUp(object sender, MouseEventArgs e)
+		{
+			mouse = null;
+		}
+
+		private void editor_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (mouse != null)
+			{
+				var oldPos = ((Point)mouse).X;
+				var newPos = e.X;
+				var delta = newPos - oldPos;
+				editor.LeftPadding += delta;
+
+				// update line number position
+				editor.ShowLineNumbers = false;
+				editor.ShowLineNumbers = true;
+
+				mouse = e.Location;
+			}
 		}
 	}
 }

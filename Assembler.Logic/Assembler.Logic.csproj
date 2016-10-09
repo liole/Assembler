@@ -54,6 +54,7 @@
     <Compile Include="Definition.cs" />
     <Compile Include="Exceptions\ArgumentException.cs" />
     <Compile Include="Exceptions\ArgumentNumberException.cs" />
+    <Compile Include="Exceptions\ExceptionHandlerArgs.cs" />
     <Compile Include="Exceptions\VariableRedeclaredException.cs" />
     <Compile Include="Exceptions\VariableNotDeclaredException.cs" />
     <Compile Include="Exceptions\ArgumentSizeException.cs" />

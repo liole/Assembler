@@ -13,9 +13,10 @@ namespace Assembler.Logic.Exceptions
 
 		public static string[] Types = new[] { "None", "Register", "Number", "Memory" };
 
-		public ArgumentException(int lineNumber, string commandName,
-			Lexer.ArgumentType arg1Type, Lexer.ArgumentType arg2Type = Lexer.ArgumentType.None):
-			base(lineNumber, commandName)
+		public ArgumentException(string commandName,
+			Lexer.ArgumentType arg1Type, Lexer.ArgumentType arg2Type = Lexer.ArgumentType.None,
+			Lexer.CaptureInfo capture = null):
+			base(commandName, capture)
 		{
 			Argument1Type = arg1Type;
 			Argument2Type = arg2Type;
@@ -29,14 +30,22 @@ namespace Assembler.Logic.Exceptions
 				var arg2 = Types[(int)Argument2Type];
 				if (Argument2Type == Lexer.ArgumentType.None)
 				{
-					return String.Format("Command '{0}' can not have argument of type '{1}'.[Line {2}]",
-						CommandName, arg1, LineNumber);
+					return String.Format("Command '{0}' can not have argument of type '{1}'.",
+						CommandName, arg1);
 				}
 				else
 				{
-					return String.Format("Combination of arguments: '{0}', '{1}' for command '{2}' is not supported.[Line {3}]",
-						arg1, arg2, CommandName, LineNumber);
+					return String.Format("Combination of arguments: '{0}', '{1}' for command '{2}' is not supported.",
+						arg1, arg2, CommandName);
 				}
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Argument error";
 			}
 		}
 	}

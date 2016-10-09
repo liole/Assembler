@@ -8,8 +8,8 @@ namespace Assembler.Logic.Exceptions
 {
 	public class ArgumentSizeException: CommandException
 	{
-		public ArgumentSizeException(int lineNumber, string commandName):
-			base(lineNumber, commandName)
+		public ArgumentSizeException(string commandName, Lexer.CaptureInfo capture = null) :
+			base(commandName, capture)
 		{
 		}
 
@@ -17,8 +17,16 @@ namespace Assembler.Logic.Exceptions
 		{
 			get
 			{
-				return String.Format("Size of argument(s) for command '{0}' is incompatible.[Line {1}]",
-					CommandName, LineNumber);
+				return String.Format("Size of argument(s) for command '{0}' is incompatible.",
+					CommandName);
+			}
+		}
+
+		public override string ErrorName
+		{
+			get
+			{
+				return "Argument size error";
 			}
 		}
 	}

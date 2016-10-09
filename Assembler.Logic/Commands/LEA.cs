@@ -16,11 +16,6 @@ namespace Assembler.Logic.Commands
 		{
 			byte cmd = 0x8d;
 			byte mod = 0x00;
-			if (!Argument1.IsWord)
-			{
-				// TODO: make better exception
-				throw new Exceptions.ArgumentSizeException(LineNumber, "LEA");
-			}
 			var reg = Argument1.Code;
 			byte rm = 0x06;
 			var modrm = Command.GetAddressingMode(mod, reg, rm);
@@ -28,7 +23,7 @@ namespace Assembler.Logic.Commands
 			var declared = mem.Attach(mgr);
 			if (!declared)
 			{
-				throw new Exceptions.VariableNotDeclaredException(mem.Name, LineNumber, "LEA");
+				throw new Exceptions.VariableNotDeclaredException(mem.Name, "LEA", mem.Capture);
 			}
 			var addr = mem.GetReverseAddress();
 			mem.Detach();
@@ -41,7 +36,7 @@ namespace Assembler.Logic.Commands
 		{
 			if (line.NumberOfArguments != 2)
 			{
-				throw new Exceptions.ArgumentNumberException(line.LineNumber, "LEA", line.NumberOfArguments);
+				throw new Exceptions.ArgumentNumberException("LEA", line.NumberOfArguments);
 			}
 			var cmd = new LEA()
 			{
@@ -51,10 +46,15 @@ namespace Assembler.Logic.Commands
 			{
 				case Lexer.ArgumentType.Register:
 					cmd.Argument1 = new Register(line.Argument(1));
+					if (!cmd.Argument1.IsWord)
+					{
+						// TODO: make better exception
+						throw new Exceptions.ArgumentSizeException("LEA");
+					}
 					switch (line.TypeOfArgument(2))	
 					{
 						case Lexer.ArgumentType.Name:
-							cmd.Argument2 = new MemoryName(line.Argument(2));
+							cmd.Argument2 = new MemoryName(line.Argument(2), line.LastCapture);
 							cmd.Assemble = cmd.assembleRM;
 							break;
 					}
@@ -63,8 +63,7 @@ namespace Assembler.Logic.Commands
 			if (cmd.Assemble == null)
 			{
 				// need better exception ?
-				throw new Exceptions.ArgumentException(
-					line.LineNumber, "LEA", line.TypeOfArgument(1), line.TypeOfArgument(2));
+				throw new Exceptions.ArgumentException("LEA", line.TypeOfArgument(1), line.TypeOfArgument(2));
 			}
 			return cmd;
 		}

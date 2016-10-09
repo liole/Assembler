@@ -8,15 +8,30 @@ namespace Assembler.Logic
 {
 	public class Compiler
 	{
-		public Program Program { get; set; }
+		public Program Program { get; private set; }
+		public List<Exceptions.LineException> Exceptions { get; private set; }
 
-		public byte[] Compile(string text)
+		public byte[] Compile(string text, bool collectExceptions = true)
 		{
+			Exceptions = new List<Logic.Exceptions.LineException>();
 			var parser = new Parser(text);
+			if (collectExceptions)
+			{
+				parser.ExceptionHandler += compiler_ExceptionHandler;
+			}
 			Program = parser.Parse();
+			if (collectExceptions)
+			{
+				Program.ExceptionHandler += compiler_ExceptionHandler;
+			}
 			var preCode = Program.Assemble();	// pass 1 - calculate symbols addresses
 			var code = Program.Assemble();		// pass 2 - get assembled code
 			return code;
+		}
+
+		void compiler_ExceptionHandler(object sender, Exceptions.ExceptionHandlerArgs e)
+		{
+			Exceptions.Add(e.Exception);
 		}
 	}
 }
