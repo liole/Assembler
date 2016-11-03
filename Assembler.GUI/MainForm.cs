@@ -29,6 +29,7 @@ namespace Assembler.GUI
 		{
 			compiler = new Compiler();
 			InitializeComponent();
+			//editor.Text = Lexer.LINE;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -116,8 +117,8 @@ EXIT"
 		{
 			e.ChangedRange.ClearStyle(commentStyle, stringStyle, keywordStyle, registerStyle, numberStyle);
 
-			e.ChangedRange.SetStyle(commentStyle, ";.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(stringStyle, Lexer.STRING_LITERAL);
+			e.ChangedRange.SetStyle(commentStyle, ";.*$", RegexOptions.Multiline);
 			e.ChangedRange.SetStyle(keywordStyle, "\\b(" + Lexer.COMMAND_LIST + "|db|dw)\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(registerStyle, "\\b" + Lexer.REGISTER + "\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(numberStyle, "\\b" + Lexer.NUMBER + "\\b", RegexOptions.IgnoreCase);

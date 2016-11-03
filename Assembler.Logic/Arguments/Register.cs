@@ -47,5 +47,18 @@ namespace Assembler.Logic.Arguments
 			Codes["DI"] = Codes["BH"] = 0x07;
 		}
 
+		public byte MOD
+		{
+			get { return 0x03; }
+		}
+		public byte RM
+		{
+			get { return this.Code; }
+		}
+
+		public byte[] GetData(bool word = true)
+		{
+			return new byte[] { };
+		}
 	}
 }

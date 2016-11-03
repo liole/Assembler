@@ -55,7 +55,7 @@ namespace Assembler.Logic.Commands
 					{
 						case Lexer.ArgumentType.Name:
 							cmd.Argument2 = new MemoryName(line.Argument(2), line.LastCapture);
-							cmd.Assemble = cmd.assembleRM;
+							cmd.Assemble =  cmd.assembleRM;
 							break;
 					}
 					break;

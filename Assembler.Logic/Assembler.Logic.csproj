@@ -41,11 +41,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arguments\IArgument.cs" />
+    <Compile Include="Arguments\Memory.cs" />
     <Compile Include="Arguments\MemoryName.cs" />
     <Compile Include="Arguments\Number.cs" />
     <Compile Include="Arguments\Register.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Creator.cs" />
+    <Compile Include="Commands\Factory.cs" />
     <Compile Include="Commands\INT.cs" />
     <Compile Include="Commands\LEA.cs" />
     <Compile Include="Commands\ORG.cs" />

@@ -96,7 +96,7 @@
         '\"',
         '\'',
         '\''};
-			this.editor.AutoScrollMinSize = new System.Drawing.Size(357, 168);
+			this.editor.AutoScrollMinSize = new System.Drawing.Size(301, 280);
 			this.editor.BackBrush = null;
 			this.editor.CharHeight = 14;
 			this.editor.CharWidth = 8;
@@ -104,6 +104,7 @@
 			this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.editor.IsReplaceMode = false;
 			this.editor.LeftPadding = 90;
 			this.editor.Location = new System.Drawing.Point(0, 49);
@@ -113,8 +114,7 @@
 			this.editor.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("editor.ServiceColors")));
 			this.editor.Size = new System.Drawing.Size(584, 423);
 			this.editor.TabIndex = 4;
-			this.editor.Text = "org 100h\r\nmov ah, 9\r\nlea dx, msg\r\nint 21h\r\n\r\nmov ax, 0x4c00 ; exit program\r\nint 2" +
-    "1h\r\n\r\nmsg db \'Hello world!\'\r\n    db 10\r\n    db 13\r\n    db \'$\'";
+			this.editor.Text = resources.GetString("editor.Text");
 			this.editor.Zoom = 100;
 			this.editor.ToolTipNeeded += new System.EventHandler<FastColoredTextBoxNS.ToolTipNeededEventArgs>(this.editor_ToolTipNeeded);
 			this.editor.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.editor_TextChanged);

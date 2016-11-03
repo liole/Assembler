@@ -135,6 +135,28 @@
         CgAAAAAAAAAAjQABAAH4/////P///woAAAAAAAAAAKQAAQAB9/////z///8KAAAAAAAAAACWAAEACw==
 </value>
   </data>
+  <data name="editor.Text" xml:space="preserve">
+    <value>org 100h
+
+mov msg, 0x48 ; H
+
+mov ah, 9
+lea dx, msg
+int 21h
+
+mov dx, 0x4c00
+mov exit, dx
+mov bx, exit
+mov ax, bx
+int 21h
+
+msg  db 'Nello world!'
+     db 10
+     db 13
+     db '$'
+     
+exit dw ?</value>
+  </data>
   <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

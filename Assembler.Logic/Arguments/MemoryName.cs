@@ -6,28 +6,17 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic.Arguments
 {
-	class MemoryName: IArgument
+	class MemoryName: Memory
 	{
-		public string Name { get; set; }
-		private MemoryManager mgr;
-
-		public Lexer.CaptureInfo Capture { get; set; } // if not declared need to point to it
-
-		public MemoryName(string name, Lexer.CaptureInfo capture = null)
+		public MemoryName(string name, Lexer.CaptureInfo capture = null):
+			base(capture, name)
 		{
-			Name = name;
-			Capture = capture;
 		}
 
-		public bool Attach(MemoryManager mgr)
+		public override bool Attach(MemoryManager mgr)
 		{
-			this.mgr = mgr;
+			base.Attach(mgr);
 			return mgr.Variables.ContainsKey(Name);
-		}
-
-		public void Detach()
-		{
-			this.mgr = null;
 		}
 
 		public Int16 GetAddress()
@@ -41,12 +30,26 @@ namespace Assembler.Logic.Arguments
 			return new[] { (byte)addr, (byte)(addr >> 8) };
 		}
 
-		public bool IsWord
+		public override bool IsWord
 		{
 			get
 			{
 				return mgr.VariableTypes[Name] == Definition.DefinitionType.Word;
 			}
+		}
+
+		public override byte MOD
+		{
+			get { return 0x00; }
+		}
+		public override byte RM
+		{
+			get { return 0x06; }
+		}
+
+		public override byte[] GetData(bool word = true)
+		{
+			return GetReverseAddress();
 		}
 	}
 }

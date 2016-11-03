@@ -164,11 +164,16 @@ namespace Assembler.Logic
 				c.Index + c.Length <= capt.Index + capt.Length) > 0;
 		}
 
-		private Capture getGroupInside(Capture capt, string name)
+		private IEnumerable<Capture> getGroupsInside(Capture capt, string name)
 		{
-			return match.Groups[name].Captures.OfType<Capture>().FirstOrDefault(c =>
+			return match.Groups[name].Captures.OfType<Capture>().Where(c =>
 				c.Index >= capt.Index &&
 				c.Index + c.Length <= capt.Index + capt.Length);
+		}
+
+		private Capture getGroupInside(Capture capt, string name)
+		{
+			return getGroupsInside(capt, name).FirstOrDefault();
 		}
 
 		public ArgumentType TypeOfArgument(int n)
@@ -180,6 +185,10 @@ namespace Assembler.Logic
 			}
 			var group = args[n-1];
 			lastCapture = group;
+			if (isGroupIn(group, "indirect"))
+			{
+				return ArgumentType.Indirect;
+			}
 			if (isGroupIn(group, "number"))
 			{
 				return ArgumentType.Number;
@@ -243,6 +252,45 @@ namespace Assembler.Logic
 			return null;
 		}
 
+		public string NameInArgument(int n)
+		{
+			var args = match.Groups["argument"].Captures;
+			if (n > args.Count)
+			{
+				return null;
+			}
+			var group = args[n-1];
+			var nameGroup = getGroupInside(group, "name");
+			lastCapture = nameGroup ?? group;
+			return nameGroup != null ? nameGroup.Value : null;
+		}
+
+		public IEnumerable<string> RegistersInArgument(int n)
+		{
+			var args = match.Groups["argument"].Captures;
+			if (n > args.Count)
+			{
+				return null;
+			}
+			var group = args[n-1];
+			var registerGroups = getGroupsInside(group, "register");
+			lastCapture = group;
+			return registerGroups.Select(g => g.Value);
+		}
+
+		public IEnumerable<Int16?> NumbersInArgument(int n)
+		{
+			var args = match.Groups["argument"].Captures;
+			if (n > args.Count)
+			{
+				return null;
+			}
+			var group = args[n-1];
+			var numberGroups = getGroupsInside(group, "number");
+			lastCapture = group;
+			return numberGroups.Select(g => groupAsNumber(g));
+		}
+
 		public Int16? ArgumentAsNumber(int n)
 		{
 			var args = match.Groups["argument"].Captures;
@@ -293,7 +341,7 @@ namespace Assembler.Logic
 
 		public enum ArgumentType
 		{
-			None, Register, Number, Name
+			None, Register, Number, Name, Indirect
 		}
 
 		public enum ValueType
@@ -315,18 +363,20 @@ namespace Assembler.Logic
 		public static string HEX_NUMBER_2 = "0x(?<number_hex>[0-9a-f]+)";
 		public static string HEX_NUMBER = $"{HEX_NUMBER_1}|{HEX_NUMBER_2}";
 		public static string NUMBER = $"(?<number>{BIN_NUMBER}|{HEX_NUMBER}|{DEC_NUMBER})";
-		public static string STRING_LITERAL_1 = "'(?<string_literal>[^'\n\r]*)'";
-		public static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"\n\r]*)\"";
+		public static string STRING_LITERAL_1 = "'(?<string_literal>[^'\\n\\r]*)'";
+		public static string STRING_LITERAL_2 = "\"(?<string_literal>[^\"\\n\\r]*)\"";
 		public static string STRING_LITERAL = $"{STRING_LITERAL_1}|{STRING_LITERAL_2}";
 		public static string LITERAL = $"(?<literal>{STRING_LITERAL}|{NUMBER})";
 		public static string REGISTER = "(?<register>ax|bx|cx|dx|sp|bp|si|di|al|bl|cl|dl|ah|bh|ch|dh)";
+		public static string REG_NUM = $"(?:{REGISTER}|{NUMBER})";
 		public static string NAME = "(?<name>[a-z_][a-z_0-9]*)";
 		public static string COMMAND_LIST = String.Join("|", Commands.Creator.List);
 		public static string COMMAND = $"(?<command>[a-z]+)";
 		public static string DEFINITION = "(?<definition>db|dw)";
 		public static string DEFINE_LINE = $"(?:{NAME}\\s+)?{DEFINITION}\\s+(?<value>{LITERAL}|\\?)";
-		public static string ARGUMENT = $"{REGISTER}|{NUMBER}|{NAME}";
-		public static string COMMAND_LINE = $"{COMMAND}(?:\\s+(?<argument>{ARGUMENT}))?(?:\\s*,\\s*(?<argument>{ARGUMENT}))*";
+		public static string INDIRECT = $"(?<indirect>{NAME}?\\[{REG_NUM}(?:\\+{REG_NUM})*\\])";
+		public static string ARGUMENT = $"(?<argument>{REGISTER}|{NUMBER}|{NAME}|{INDIRECT})";
+		public static string COMMAND_LINE = $"{COMMAND}(?:\\s+{ARGUMENT})?(?:\\s*,\\s*{ARGUMENT})*";
 		public static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
 	
 	}

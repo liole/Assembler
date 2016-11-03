@@ -11,7 +11,7 @@ namespace Assembler.Logic.Exceptions
 		public Lexer.ArgumentType Argument1Type { get; set; }
 		public Lexer.ArgumentType Argument2Type { get; set; }
 
-		public static string[] Types = new[] { "None", "Register", "Number", "Memory" };
+		public static string[] Types = new[] { "None", "Register", "Number", "Memory", "Indirect memory" };
 
 		public ArgumentException(string commandName,
 			Lexer.ArgumentType arg1Type, Lexer.ArgumentType arg2Type = Lexer.ArgumentType.None,

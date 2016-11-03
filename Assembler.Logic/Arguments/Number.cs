@@ -39,5 +39,16 @@ namespace Assembler.Logic.Arguments
 		{
 			return word ? GetReverseWord() : new[] { GetByte() };
 		}
+
+		public byte MOD
+		{
+			get { return 0x03; }
+		}
+		public byte RM { get; set; }
+
+		public byte[] GetData(bool word = true)
+		{
+			return GetValue(word);
+		}
 	}
 }
