@@ -69,14 +69,26 @@ namespace Assembler.Logic.Commands
 							cmd.Assemble =  cmd.assembleRI;
 							break;
 						case Lexer.ArgumentType.Name:
-							cmd.Argument2 = new MemoryName(line.Argument(2), line.LastCapture);
+						case Lexer.ArgumentType.Indirect:
+							cmd.Argument2 = new MemoryIndirect(
+								line.NameInArgument(2),
+								line.RegistersInArgument(2),
+								line.NumbersInArgument(2),
+								line.LastCapture
+							);
 							cmd.Assemble =  cmd.FactoryAssemble(0x8a); //cmd.assembleRM;
 							isMem = true;
 							break;
 					}
 					break;
 				case Lexer.ArgumentType.Name:
-					cmd.Argument1 = new MemoryName(line.Argument(1), line.LastCapture);
+				case Lexer.ArgumentType.Indirect:
+					cmd.Argument1 = new MemoryIndirect(
+						line.NameInArgument(1),
+						line.RegistersInArgument(1),
+						line.NumbersInArgument(1),
+						line.LastCapture
+					);
 					isMem = true;
 					switch (line.TypeOfArgument(2))	
 					{

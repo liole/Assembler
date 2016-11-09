@@ -68,7 +68,7 @@ namespace Assembler.Logic
 					}
 					break;
 			}
-			line.GetName(); // can de redefined exception later, point to variable name
+			line.GetName(); // can be RedefinedException later, point to variable name
 			return def;
 		}
 

@@ -17,18 +17,12 @@ namespace Assembler.Logic.Arguments
 
 		public byte Code
 		{
-			get
-			{
-				return Codes[Type];
-			}
+			get { return Codes[Type]; }
 		}
 
 		public bool IsWord
 		{
-			get
-			{
-				return Type[1] != 'L' && Type[1] != 'H';
-			}
+			get { return Type[1] != 'L' && Type[1] != 'H'; }
 		}
 
 		public static Dictionary<string, byte> Codes { get; set; }

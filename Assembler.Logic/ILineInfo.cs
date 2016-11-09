@@ -23,6 +23,10 @@ namespace Assembler.Logic
 		Lexer.ArgumentType TypeOfArgument(int n);
 		Lexer.ValueType TypeOfValue();
 
+		string NameInArgument(int n);
+		IEnumerable<string> RegistersInArgument(int n);
+		IEnumerable<Int16?> NumbersInArgument(int n);
+
 
 		Int16? ArgumentAsNumber(int n);
 		Int16? ValueAsNumber();

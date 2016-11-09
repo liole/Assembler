@@ -139,6 +139,11 @@
     <value>org 100h
 
 mov msg, 0x48 ; H
+lea BP, msg
+mov SI, 1
+mov [BP+SI], 0x45 ; E
+mov msg[5], 0x5f ; _
+
 
 mov ah, 9
 lea dx, msg

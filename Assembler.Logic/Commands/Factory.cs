@@ -35,6 +35,14 @@ namespace Assembler.Logic.Commands
 			{
 				return arg1.IsWord;
 			}
+			if (arg1 is MemoryIndirect)
+			{
+				return arg2.IsWord;
+			}
+			if (arg2 is MemoryIndirect)
+			{
+				return arg1.IsWord;
+			}
 			if (arg2 is Number && arg1.IsWord)
 			{
 				return true;
