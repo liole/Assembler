@@ -96,7 +96,7 @@
         '\"',
         '\'',
         '\''};
-			this.editor.AutoScrollMinSize = new System.Drawing.Size(389, 686);
+			this.editor.AutoScrollMinSize = new System.Drawing.Size(389, 770);
 			this.editor.BackBrush = null;
 			this.editor.CharHeight = 14;
 			this.editor.CharWidth = 8;

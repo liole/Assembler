@@ -161,8 +161,14 @@ mov ah, 9
 lea dx, msg
 int 21h
 
+mov bx, 3
+mov ax, 30
+mov dx, 0   ; !!! dx:ax / bx
+idiv bx
+mov cx, ax  ; 30/3 = 10
+
 mov ah, 9
-mov cx, arrowCount
+;mov cx, arrowCount
 endArrow:
     lea dx, arrowLeft
     int 21h

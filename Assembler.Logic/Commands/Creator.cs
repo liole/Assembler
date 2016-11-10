@@ -24,6 +24,10 @@ namespace Assembler.Logic.Commands
 
 			commands["add"] = ADD.Create;
 			commands["sub"] = SUB.Create;
+			commands["mul"] = MUL.Create;
+			commands["imul"] = IMUL.Create;
+			commands["div"] = DIV.Create;
+			commands["idiv"] = IDIV.Create;
 
 			commands["jmp"] = JMP.Create;
 			commands["loop"] = LOOP.Create;

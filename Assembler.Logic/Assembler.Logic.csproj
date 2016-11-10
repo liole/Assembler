@@ -46,9 +46,13 @@
     <Compile Include="Arguments\MemoryName.cs" />
     <Compile Include="Arguments\Number.cs" />
     <Compile Include="Arguments\Register.cs" />
+    <Compile Include="Commands\IDIV.cs" />
     <Compile Include="Commands\Jxx.cs" />
     <Compile Include="Commands\LOOP.cs" />
     <Compile Include="Commands\JMP.cs" />
+    <Compile Include="Commands\IMUL.cs" />
+    <Compile Include="Commands\DIV.cs" />
+    <Compile Include="Commands\MUL.cs" />
     <Compile Include="Commands\POP.cs" />
     <Compile Include="Commands\PUSH.cs" />
     <Compile Include="Commands\SUB.cs" />

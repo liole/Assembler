@@ -50,7 +50,36 @@ namespace Assembler.Logic.Commands
 			throw new Exceptions.ArgumentSizeException(name);
 		}
 
-		public static Func<MemoryManager, byte[]> Assemble2Args(byte cmd, string name, IArgument arg1, IArgument arg2, byte iReg = 0)
+		public static Func<MemoryManager, byte[]> Assemble1Arg(byte cmd, string name, IArgument arg1, byte iReg = 0)
+		{
+			return (mgr) =>
+			{
+				if (arg1 is Memory)
+				{
+					var mem = arg1 as Memory;
+					var declared = mem.Attach(mgr);
+					if (!declared)
+					{
+						throw new Exceptions.VariableNotDeclaredException(mem.Name, name, mem.Capture);
+					}
+				}
+				var w = arg1.IsWord;
+				var cmdw = (byte)(cmd | (w ? 1 : 0));
+				byte mod = (byte)arg1.MOD;
+				byte reg = iReg;
+				byte rm = arg1.RM;
+				var modrm = Command.GetAddressingMode(mod, reg, rm);
+				var data = new List<byte>() { cmdw, modrm };
+				data.AddRange(arg1.GetData(w));
+				if (arg1 is Memory)
+				{
+					(arg1 as Memory).Detach();
+				}
+				return data.ToArray();
+			};
+		}
+
+		public static Func<MemoryManager, byte[]> Assemble2Args(byte cmd, string name, IArgument arg1, IArgument arg2, byte iReg = 0, byte? prefix = null, bool wordOnly = false)
 		{
 			var args = new[] { arg1, arg2 };
 			return (mgr) =>
@@ -64,6 +93,10 @@ namespace Assembler.Logic.Commands
 					}
 				});
 				var w = CheckArgumentSize(name, arg1, arg2);
+				if (wordOnly && !w)
+				{
+					throw new Exceptions.ArgumentSizeException(name);
+				}
 				var cmdw = (byte)(cmd | (w ? 1 : 0));
 				ForEach<Number>(args, num => num.RM = iReg);
 				byte mod = (byte)(arg1.MOD & arg2.MOD);
@@ -77,6 +110,10 @@ namespace Assembler.Logic.Commands
 				var data = new List<byte>() { cmdw, modrm };
 				ForEach<IArgument>(args, arg => data.AddRange(arg.GetData(w)));
 				ForEach<Memory>(args, mem => mem.Detach());
+				if (prefix != null)
+				{
+					data.Insert(0, (byte)prefix);
+				}
 				return data.ToArray();
 			};
 		}
