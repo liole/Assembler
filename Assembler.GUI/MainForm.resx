@@ -138,6 +138,14 @@
   <data name="editor.Text" xml:space="preserve">
     <value>org 100h
 
+mov ah, 9
+push arrowCount
+pop cx
+startArrow:
+    lea dx, arrowRight
+    int 21h
+loop startArrow
+
 mov al, 0x41 ; A
 add al, 7   ; A + 7 = H
 mov msg, al
@@ -153,6 +161,14 @@ mov ah, 9
 lea dx, msg
 int 21h
 
+mov ah, 9
+mov cx, arrowCount
+endArrow:
+    lea dx, arrowLeft
+    int 21h
+    sub cx, 1
+jnz endArrow
+
 mov dx, 0x4c00
 mov exit, dx
 mov bx, exit
@@ -164,7 +180,11 @@ msg  db 'NEllo world!'
      db 13
      db '$'
      
-exit dw ?</value>
+exit dw ?
+
+arrowCount dw 10
+arrowRight db '&gt;$'
+arrowLeft  db '&lt;$'</value>
   </data>
   <metadata name="toolStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

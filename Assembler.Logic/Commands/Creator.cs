@@ -13,15 +13,24 @@ namespace Assembler.Logic.Commands
 		static Creator()
 		{
 			commands = new Dictionary<string, Func<ILineInfo, Command>>();
-			commands["mov"] = MOV.Create;
 			commands["org"] = ORG.Create;
 			commands["int"] = INT.Create;
+
+			commands["mov"] = MOV.Create;
 			commands["lea"] = LEA.Create;
+
+			commands["push"] = PUSH.Create;
+			commands["pop"] = POP.Create;
 
 			commands["add"] = ADD.Create;
 			commands["sub"] = SUB.Create;
 
 			commands["jmp"] = JMP.Create;
+			commands["loop"] = LOOP.Create;
+			foreach(var command in Jxx.Codes.Keys)
+			{
+				commands[command.ToLower()] = Jxx.Create;
+			}
 		}
 
 		public static Command Create(string command, ILineInfo line)
