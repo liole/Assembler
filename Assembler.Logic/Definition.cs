@@ -17,7 +17,7 @@ namespace Assembler.Logic
 		{
 			if (Name != null)
 			{
-				mgr.Variables[Name] = mgr.Pointer;
+				mgr.DefineVariable(Name);
 			}
 			return Value;
 		}

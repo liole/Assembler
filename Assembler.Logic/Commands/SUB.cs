@@ -7,7 +7,7 @@ using Assembler.Logic.Arguments;
 
 namespace Assembler.Logic.Commands
 {
-	class MOV: Command
+	class SUB: Command
 	{
 		public IArgument Argument1 { get; set; }
 		public IArgument Argument2 { get; set; }
@@ -22,34 +22,21 @@ namespace Assembler.Logic.Commands
 			{
 				return true;
 			}
-			throw new Exceptions.ArgumentSizeException("MOV");
-		}
-
-		byte[] assembleRI(MemoryManager mgr)
-		{
-			byte cmd = 0xb0;
-			var w = CheckArgumentSize();
-			var cmdw = (byte)(cmd | ((w ? 1 : 0) << 3));
-			var reg = (Argument1 as Register).Code;
-			var cmdwreg = (byte)(cmdw | reg);
-			var im = (Argument2 as Number).GetValue(w);
-			var res = new List<byte>() { cmdwreg };
-			res.AddRange(im);
-			return res.ToArray();
+			throw new Exceptions.ArgumentSizeException("SUB");
 		}
 		
 		public Func<MemoryManager, byte[]> FactoryAssemble(byte cmd)
 		{
-			return Factory.Assemble2Args(cmd, "MOV", this.Argument1, this.Argument2);
+			return Factory.Assemble2Args(cmd, "SUB", this.Argument1, this.Argument2, 0x05);
 		}
 
-		public static MOV Create(ILineInfo line)
+		public static SUB Create(ILineInfo line)
 		{
 			if (line.NumberOfArguments != 2)
 			{
-				throw new Exceptions.ArgumentNumberException("MOV", line.NumberOfArguments);
+				throw new Exceptions.ArgumentNumberException("SUB", line.NumberOfArguments);
 			}
-			var cmd = new MOV()
+			var cmd = new SUB()
 			{
 				LineNumber = line.LineNumber
 			};
@@ -62,11 +49,11 @@ namespace Assembler.Logic.Commands
 					{
 						case Lexer.ArgumentType.Register:
 							cmd.Argument2 = new Register(line.Argument(2));
-							cmd.Assemble = cmd.FactoryAssemble(0x88); //cmd.assembleRR;
+							cmd.Assemble = cmd.FactoryAssemble(0x28);
 							break;
 						case Lexer.ArgumentType.Number:
 							cmd.Argument2 = new Number((Int16)line.ArgumentAsNumber(2));
-							cmd.Assemble = cmd.assembleRI; //cmd.FactoryAssemble(0xc6);
+							cmd.Assemble = cmd.FactoryAssemble(0x80);
 							break;
 						case Lexer.ArgumentType.Name:
 						case Lexer.ArgumentType.Indirect:
@@ -76,7 +63,7 @@ namespace Assembler.Logic.Commands
 								line.NumbersInArgument(2),
 								line.LastCapture
 							);
-							cmd.Assemble =  cmd.FactoryAssemble(0x8a); //cmd.assembleRM;
+							cmd.Assemble = cmd.FactoryAssemble(0x2a);
 							isMem = true;
 							break;
 					}
@@ -94,11 +81,11 @@ namespace Assembler.Logic.Commands
 					{
 						case Lexer.ArgumentType.Register:
 							cmd.Argument2 = new Register(line.Argument(2));
-							cmd.Assemble = cmd.FactoryAssemble(0x88); //cmd.assembleMR;
+							cmd.Assemble = cmd.FactoryAssemble(0x28);
 							break;
 						case Lexer.ArgumentType.Number:
 							cmd.Argument2 = new Number((Int16)line.ArgumentAsNumber(2));
-							cmd.Assemble = cmd.FactoryAssemble(0xc6); //cmd.assembleMI;
+							cmd.Assemble = cmd.FactoryAssemble(0x80);
 							break;
 					}
 					break;
@@ -106,7 +93,7 @@ namespace Assembler.Logic.Commands
 			if (cmd.Assemble == null)
 			{
 				var lastCapture = line.LastCapture;
-				throw new Exceptions.ArgumentException("MOV", line.TypeOfArgument(1), line.TypeOfArgument(2), lastCapture);
+				throw new Exceptions.ArgumentException("SUB", line.TypeOfArgument(1), line.TypeOfArgument(2), lastCapture);
 			}
 			if (!isMem)
 			{

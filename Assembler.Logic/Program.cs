@@ -29,7 +29,7 @@ namespace Assembler.Logic
 				var definition = instruction as Definition;
 				if (definition.Name != null)
 				{
-					if (memoryManager.Variables.ContainsKey(definition.Name))
+					if (memoryManager.IsVariableDecalared(definition.Name))
 					{
 						throw new Exceptions.VariableRedeclaredException(definition.Name);
 					}
@@ -39,6 +39,10 @@ namespace Assembler.Logic
 			if (instruction is Label)
 			{
 				var label = instruction as Label;
+				if (memoryManager.IsLabelDecalared(label.Name))
+				{
+					throw new Exceptions.LabelRedeclaredException(label.Name);
+				}
 				memoryManager.DeclareLabel(label.Name);
 			}
 		}

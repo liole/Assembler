@@ -35,11 +35,11 @@ namespace Assembler.Logic.Commands
 			{
 				return arg1.IsWord;
 			}
-			if (arg1 is MemoryIndirect)
+			if (arg1 is MemoryIndirect && !(arg1 as MemoryIndirect).HasKnownSize)
 			{
 				return arg2.IsWord;
 			}
-			if (arg2 is MemoryIndirect)
+			if (arg2 is MemoryIndirect && !(arg2 as MemoryIndirect).HasKnownSize)
 			{
 				return arg1.IsWord;
 			}

@@ -17,6 +17,11 @@ namespace Assembler.Logic.Commands
 			commands["org"] = ORG.Create;
 			commands["int"] = INT.Create;
 			commands["lea"] = LEA.Create;
+
+			commands["add"] = ADD.Create;
+			commands["sub"] = SUB.Create;
+
+			commands["jmp"] = JMP.Create;
 		}
 
 		public static Command Create(string command, ILineInfo line)

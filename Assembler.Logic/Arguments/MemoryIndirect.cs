@@ -54,7 +54,7 @@ namespace Assembler.Logic.Arguments
 			{
 				return true;
 			}
-			return mgr.Variables.ContainsKey(Name);
+			return mgr.IsVariableDecalared(Name);
 		}
 
 		public string RegisterCombination
@@ -75,6 +75,11 @@ namespace Assembler.Logic.Arguments
 				addr += mgr.Variables[Name];
 			}
 			return addr;
+		}
+
+		public bool HasKnownSize
+		{
+			get { return Name != null; }
 		}
 
 		public override bool IsWord

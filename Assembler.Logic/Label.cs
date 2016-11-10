@@ -19,7 +19,7 @@ namespace Assembler.Logic
 
 		public byte[] Assemble(MemoryManager mgr)
 		{
-			//throw new NotImplementedException();
+			mgr.DefineLabel(Name);
 			return new byte[] {};
 		}
 	}

@@ -77,14 +77,14 @@ EXIT"
 			var firstLine = editor.VisibleRange.Count() == 0 ? -1 : editor.VisibleRange.First().iLine;
 			if (firstLine == -1 || e.LineIndex == firstLine)
 			{
-				e.Graphics.DrawLine(
-					Pens.DimGray, 
-					new Point(editor.LeftPadding, 0), 
-					new Point(editor.LeftPadding, editor.Height)
-				);
 				e.Graphics.FillRectangle(
 					Brushes.LightYellow,
 					new Rectangle(0, 0, editor.LeftPadding, editor.Height)
+				);
+				e.Graphics.DrawLine(
+					new Pen(Color.DimGray, resizeCodeAreaHover ? 5 : 1),
+					new Point(editor.LeftPadding, 0),
+					new Point(editor.LeftPadding, editor.Height)
 				);
 			}
 		}
@@ -186,10 +186,16 @@ EXIT"
 			run();
 		}
 
+		private bool shouldResizeCodeArea(int x)
+		{
+			return Math.Abs(x - editor.LeftPadding) < 3;
+		}
+
+		private bool resizeCodeAreaHover = false;
 		private Point? mouse = null;
 		private void editor_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (Math.Abs(e.X - editor.LeftPadding) < 2)
+			if (shouldResizeCodeArea(e.X))
 			{
 				mouse = e.Location;
 			}
@@ -202,6 +208,12 @@ EXIT"
 
 		private void editor_MouseMove(object sender, MouseEventArgs e)
 		{
+			var isHover = mouse != null || shouldResizeCodeArea(e.X);
+			if (resizeCodeAreaHover != isHover)
+			{
+				resizeCodeAreaHover = isHover;
+				editor.Invalidate();
+			}
 			if (mouse != null)
 			{
 				var oldPos = ((Point)mouse).X;

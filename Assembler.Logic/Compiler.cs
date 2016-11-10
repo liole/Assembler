@@ -24,8 +24,9 @@ namespace Assembler.Logic
 			{
 				Program.ExceptionHandler += compiler_ExceptionHandler;
 			}
-			var preCode = Program.Assemble();	// pass 1 - calculate symbols addresses
-			var code = Program.Assemble();		// pass 2 - get assembled code
+			var pre1Code = Program.Assemble();	// pass 1 - calculate symbols addresses
+			var pre2code = Program.Assemble();	// pass 2 - get 8/16 bit address shifts
+			var code = Program.Assemble();		// pass 3 - get assembled code
 			return code;
 		}
 

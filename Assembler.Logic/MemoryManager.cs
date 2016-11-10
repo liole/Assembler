@@ -46,6 +46,16 @@ namespace Assembler.Logic
 			VariableTypes[name] = type;
 		}
 
+		public bool IsLabelDecalared(string name)
+		{
+			return Labels.ContainsKey(name);
+		}
+
+		public bool IsVariableDecalared(string name)
+		{
+			return Variables.ContainsKey(name);
+		}
+
 		public Int16 DefineLabel(string name)
 		{
 			Labels[name] = Pointer;

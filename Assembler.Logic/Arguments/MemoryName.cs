@@ -16,7 +16,7 @@ namespace Assembler.Logic.Arguments
 		public override bool Attach(MemoryManager mgr)
 		{
 			base.Attach(mgr);
-			return mgr.Variables.ContainsKey(Name);
+			return mgr.IsVariableDecalared(Name);
 		}
 
 		public Int16 GetAddress()

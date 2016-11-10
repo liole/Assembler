@@ -16,7 +16,7 @@ namespace Assembler.Logic.Arguments
 		public Memory(Lexer.CaptureInfo capture = null, string name = null)
 		{
 			Capture = capture;
-			Name = name;
+			Name = name != null ? name.ToLower() : null;
 		}
 
 		public virtual bool Attach(MemoryManager mgr)

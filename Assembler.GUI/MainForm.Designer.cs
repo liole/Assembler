@@ -96,7 +96,7 @@
         '\"',
         '\'',
         '\''};
-			this.editor.AutoScrollMinSize = new System.Drawing.Size(301, 350);
+			this.editor.AutoScrollMinSize = new System.Drawing.Size(389, 406);
 			this.editor.BackBrush = null;
 			this.editor.CharHeight = 14;
 			this.editor.CharWidth = 8;
@@ -104,6 +104,7 @@
 			this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.editor.IsReplaceMode = false;
 			this.editor.LeftPadding = 90;
 			this.editor.Location = new System.Drawing.Point(0, 49);

@@ -46,11 +46,14 @@
     <Compile Include="Arguments\MemoryName.cs" />
     <Compile Include="Arguments\Number.cs" />
     <Compile Include="Arguments\Register.cs" />
+    <Compile Include="Commands\JMP.cs" />
+    <Compile Include="Commands\SUB.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\Creator.cs" />
     <Compile Include="Commands\Factory.cs" />
     <Compile Include="Commands\INT.cs" />
     <Compile Include="Commands\LEA.cs" />
+    <Compile Include="Commands\ADD.cs" />
     <Compile Include="Commands\ORG.cs" />
     <Compile Include="Commands\MOV.cs" />
     <Compile Include="Compiler.cs" />
@@ -60,6 +63,8 @@
     <Compile Include="Exceptions\ExceptionHandlerArgs.cs" />
     <Compile Include="Exceptions\TooManyRegistersException.cs" />
     <Compile Include="Exceptions\RegisterCombinationNotSupportedException.cs" />
+    <Compile Include="Exceptions\LabelRedeclaredException.cs" />
+    <Compile Include="Exceptions\LabelNotDeclaredException.cs" />
     <Compile Include="Exceptions\VariableRedeclaredException.cs" />
     <Compile Include="Exceptions\VariableNotDeclaredException.cs" />
     <Compile Include="Exceptions\ArgumentSizeException.cs" />

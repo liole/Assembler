@@ -138,12 +138,16 @@
   <data name="editor.Text" xml:space="preserve">
     <value>org 100h
 
-mov msg, 0x48 ; H
+mov al, 0x41 ; A
+add al, 7   ; A + 7 = H
+mov msg, al
+
 lea BP, msg
 mov SI, 1
-mov [BP+SI], 0x45 ; E
+mov [BP+SI], 0x65 ; e
 mov msg[5], 0x5f ; _
 
+sub msg[6], 0x20 ; toUpperCase(w)
 
 mov ah, 9
 lea dx, msg
@@ -155,7 +159,7 @@ mov bx, exit
 mov ax, bx
 int 21h
 
-msg  db 'Nello world!'
+msg  db 'NEllo world!'
      db 10
      db 13
      db '$'
