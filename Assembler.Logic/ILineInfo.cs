@@ -33,6 +33,7 @@ namespace Assembler.Logic
 		string ValueAsString();
 
 		string GetName();
+		string GetAttribute();
 
 	}
 }

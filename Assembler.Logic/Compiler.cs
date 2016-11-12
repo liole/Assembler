@@ -27,6 +27,7 @@ namespace Assembler.Logic
 			var pre1Code = Program.Assemble();	// pass 1 - calculate symbols addresses
 			var pre2code = Program.Assemble();	// pass 2 - get 8/16 bit address shifts
 			var code = Program.Assemble();		// pass 3 - get assembled code
+			code = Program.Assemble();		// pass 4 - if addresses change for some reason
 			return code;
 		}
 

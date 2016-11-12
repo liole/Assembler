@@ -30,7 +30,7 @@ namespace Assembler.Logic.Arguments
 			Codes["BP+DI"] = 0x03;
 
 			Codes["SI"] = 0x04;
-			Codes["BI"] = 0x05;
+			Codes["DI"] = 0x05;
 			Codes["BP"]  = Codes[""] = 0x06;
 			Codes["BX"] = 0x07;
 		}

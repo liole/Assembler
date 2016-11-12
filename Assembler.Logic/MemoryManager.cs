@@ -12,6 +12,8 @@ namespace Assembler.Logic
 		public Dictionary<string, Int16> Labels { get; private set; }
 		public Dictionary<string, Int16> Variables { get; private set; }
 		public Dictionary<string, Definition.DefinitionType> VariableTypes { get; private set; }
+		public Dictionary<string, Int16> Procedures { get; private set; }
+		public Dictionary<string, Int16> ProcedureEnds { get; private set; }
 
 		public static Int16 UndefinedAddress = -1; //0xffff;
 
@@ -21,6 +23,8 @@ namespace Assembler.Logic
 			Labels = new Dictionary<string, Int16>();
 			Variables = new Dictionary<string, Int16>();
 			VariableTypes = new Dictionary<string, Definition.DefinitionType>();
+			Procedures = new Dictionary<string, Int16>();
+			ProcedureEnds = new Dictionary<string, Int16>();
 		}
 
 		public Int16 MovePointer(Int16 offset)
@@ -46,6 +50,16 @@ namespace Assembler.Logic
 			VariableTypes[name] = type;
 		}
 
+		public void DeclareProcedure(string name)
+		{
+			Procedures[name] = UndefinedAddress;
+		}
+
+		public void EndProcedureDeclaration(string name)
+		{
+			ProcedureEnds[name] = UndefinedAddress;
+		}
+
 		public bool IsLabelDecalared(string name)
 		{
 			return Labels.ContainsKey(name);
@@ -54,6 +68,16 @@ namespace Assembler.Logic
 		public bool IsVariableDecalared(string name)
 		{
 			return Variables.ContainsKey(name);
+		}
+
+		public bool IsProcedureDecalared(string name)
+		{
+			return Procedures.ContainsKey(name);
+		}
+
+		public bool IsProcedureEnded(string name)
+		{
+			return ProcedureEnds.ContainsKey(name);
 		}
 
 		public Int16 DefineLabel(string name)
@@ -65,6 +89,18 @@ namespace Assembler.Logic
 		public Int16 DefineVariable(string name)
 		{
 			Variables[name] = Pointer;
+			return Pointer;
+		}
+
+		public Int16 DefineProcedure(string name)
+		{
+			Procedures[name] = Pointer;
+			return Pointer;
+		}
+
+		public Int16 EndProcedureDefinition(string name)
+		{
+			ProcedureEnds[name] = Pointer;
 			return Pointer;
 		}
 	}

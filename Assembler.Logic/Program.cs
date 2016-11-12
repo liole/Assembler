@@ -24,26 +24,53 @@ namespace Assembler.Logic
 		internal void Add(IInstruction instruction)
 		{
 			program.Add(instruction);
-			if (instruction is Definition)
+		}
+
+		internal void Add(Definition definition)
+		{
+			Add(definition as IInstruction);
+			if (definition.Name != null)
 			{
-				var definition = instruction as Definition;
-				if (definition.Name != null)
+				if (memoryManager.IsVariableDecalared(definition.Name))
 				{
-					if (memoryManager.IsVariableDecalared(definition.Name))
-					{
-						throw new Exceptions.VariableRedeclaredException(definition.Name);
-					}
-					memoryManager.DeclareVariable(definition.Name, definition.Type);
+					throw new Exceptions.VariableRedeclaredException(definition.Name);
 				}
+				memoryManager.DeclareVariable(definition.Name, definition.Type);
 			}
-			if (instruction is Label)
+		}
+
+		internal void Add(Label label)
+		{
+			Add(label as IInstruction);
+			if (memoryManager.IsLabelDecalared(label.Name))
 			{
-				var label = instruction as Label;
-				if (memoryManager.IsLabelDecalared(label.Name))
+				throw new Exceptions.LabelRedeclaredException(label.Name);
+			}
+			memoryManager.DeclareLabel(label.Name);
+		}
+
+		internal void Add(Procedure procedure)
+		{
+			Add(procedure as IInstruction);
+			if (!procedure.End)
+			{
+				if (memoryManager.IsProcedureDecalared(procedure.Name))
 				{
-					throw new Exceptions.LabelRedeclaredException(label.Name);
+					throw new Exceptions.ProcedureRedeclaredException(procedure.Name);
 				}
-				memoryManager.DeclareLabel(label.Name);
+				memoryManager.DeclareProcedure(procedure.Name);
+			}
+			else
+			{
+				if (!memoryManager.IsProcedureDecalared(procedure.Name))
+				{
+					throw new Exceptions.ProcedureNotDeclaredException(procedure.Name, "ENDP");
+				}
+				if (memoryManager.IsProcedureEnded(procedure.Name))
+				{
+					throw new Exceptions.ProcedureAlreadyEndedException(procedure.Name);
+				}
+				memoryManager.EndProcedureDeclaration(procedure.Name);
 			}
 		}
 
@@ -106,6 +133,38 @@ namespace Assembler.Logic
 					throw new Exception("Assemble first");
 				}
 				return codeLines.SelectMany(line => line).ToArray();
+			}
+		}
+
+		public class ProcedureLineInfo
+		{
+			public string Name { get; set; }
+			public int Start { get; set; }
+			public int End { get; set; }
+		}
+		public ProcedureLineInfo[] ProcedureLines
+		{
+			get
+			{
+				var procedures = program.OfType<Procedure>();
+				var res = new List<ProcedureLineInfo>();
+				foreach(var proc in procedures)
+				{
+					if (!proc.End)
+					{
+						var end = procedures.FirstOrDefault(p => p.Name == proc.Name && p.End);
+						if (end != null)
+						{
+							res.Add(new ProcedureLineInfo()
+							{
+								Name = proc.Name,
+								Start = proc.LineNumber,
+								End = end.LineNumber
+							});
+						}
+					}
+				}
+				return res.ToArray();
 			}
 		}
 

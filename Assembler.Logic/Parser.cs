@@ -48,6 +48,11 @@ namespace Assembler.Logic
 								var definition = Definition.Create(lexer);
 								program.Add(definition);
 								break;
+							case Lexer.LineType.Procedure:
+							case Lexer.LineType.EndP:
+								var procedure = Procedure.Create(lexer);
+								program.Add(procedure);
+								break;
 						}
 					}
 					catch(Exceptions.LineException e)

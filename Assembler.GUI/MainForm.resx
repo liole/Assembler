@@ -132,11 +132,18 @@
         cmF3aW5nLkNvbG9yAwAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgMAAAACAAAABfz///8UU3lzdGVtLkRy
         YXdpbmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcDAAAACgAAAAAA
         AAAAlgABAAH7/////P///woAAAAAAAAAAKQAAQAB+v////z///8KAAAAAAAAAACWAAEAAfn////8////
-        CgAAAAAAAAAAjQABAAH4/////P///woAAAAAAAAAAKQAAQAB9/////z///8KAAAAAAAAAACWAAEACw==
+        CgAAAAAAAAAAIwABAAH4/////P///woAAAAAAAAAAKUAAQAB9/////z///8KAAAAAAAAAACWAAEACw==
 </value>
   </data>
   <data name="editor.Text" xml:space="preserve">
     <value>org 100h
+
+print proc inline
+    mov ah, 9
+    int 21h
+    ret
+print endp
+
 
 mov ah, 9
 push arrowCount
@@ -157,9 +164,8 @@ mov msg[5], 0x5f ; _
 
 sub msg[6], 0x20 ; toUpperCase(w)
 
-mov ah, 9
 lea dx, msg
-int 21h
+call print
 
 mov bx, 3
 mov ax, 30

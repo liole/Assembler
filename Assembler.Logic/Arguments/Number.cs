@@ -21,7 +21,7 @@ namespace Assembler.Logic.Arguments
 			{
 				//return Value >> 8 != 0;
 				var b = (byte)Value;
-				return (byte)Value != Value && (sbyte)Value != Value;
+				return (byte)Value != Value || (sbyte)Value != Value;
 			}
 		}
 

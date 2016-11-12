@@ -43,6 +43,7 @@ namespace Assembler.GUI
 			compiler.Compile(text);
 			codeLines = compiler.Program.CodeLines;
 			markErros();
+			markProceduresFoldable();
 			editor.Invalidate();
 			return compiler.Exceptions.Count == 0;
 		}
@@ -93,11 +94,11 @@ EXIT"
 		{
 			drawCodeBox(e);
 
-			if (e.LineIndex >= codeLines.Length)
+			int padding = 5;
+			if (e.LineIndex >= codeLines.Length || editor.LeftPadding <= padding)
 			{
 				return;
 			}
-			int padding = 5;
 			var code = codeLines[e.LineIndex];
 			var codeStr = String.Join(" ", code.Select(b => b.ToString("X2")));
 			e.Graphics.DrawString(
@@ -119,7 +120,7 @@ EXIT"
 
 			e.ChangedRange.SetStyle(stringStyle, Lexer.STRING_LITERAL);
 			e.ChangedRange.SetStyle(commentStyle, ";.*$", RegexOptions.Multiline);
-			e.ChangedRange.SetStyle(keywordStyle, "\\b(" + Lexer.COMMAND_LIST + "|db|dw)\\b", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(keywordStyle, "\\b(" + Lexer.COMMAND_LIST + "|db|dw|proc|endp|inline)\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(registerStyle, "\\b" + Lexer.REGISTER + "\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(numberStyle, "\\b" + Lexer.NUMBER + "\\b", RegexOptions.IgnoreCase);
 
@@ -158,6 +159,18 @@ EXIT"
 			}
 		}
 
+		private void markProceduresFoldable()
+		{
+			editor.Range.ClearFoldingMarkers();
+			var procedures = compiler.Program.ProcedureLines;
+			foreach(var proc in procedures)
+			{
+				var markerName = String.Format("p{0}", proc.Name);
+				editor[proc.Start].FoldingStartMarker = markerName;
+				editor[proc.End].FoldingEndMarker = markerName;
+			}
+		}
+
 		private void editor_ToolTipNeeded(object sender, ToolTipNeededEventArgs e)
 		{
 			var error = compiler.Exceptions.FirstOrDefault(ex => 
@@ -192,40 +205,39 @@ EXIT"
 		}
 
 		private bool resizeCodeAreaHover = false;
-		private Point? mouse = null;
+		private bool mouseDown = false;
 		private void editor_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (shouldResizeCodeArea(e.X))
 			{
-				mouse = e.Location;
+				mouseDown = true;
 			}
 		}
 
 		private void editor_MouseUp(object sender, MouseEventArgs e)
 		{
-			mouse = null;
+			mouseDown = false;
 		}
 
 		private void editor_MouseMove(object sender, MouseEventArgs e)
 		{
-			var isHover = mouse != null || shouldResizeCodeArea(e.X);
+			var isHover = mouseDown || shouldResizeCodeArea(e.X);
 			if (resizeCodeAreaHover != isHover)
 			{
 				resizeCodeAreaHover = isHover;
 				editor.Invalidate();
 			}
-			if (mouse != null)
+			if (mouseDown)
 			{
-				var oldPos = ((Point)mouse).X;
-				var newPos = e.X;
-				var delta = newPos - oldPos;
-				editor.LeftPadding += delta;
+				editor.LeftPadding = e.X;
+				if (editor.LeftPadding < 0)
+				{
+					editor.LeftPadding = 0;
+				}
 
 				// update line number position
 				editor.ShowLineNumbers = false;
 				editor.ShowLineNumbers = true;
-
-				mouse = e.Location;
 			}
 		}
 	}

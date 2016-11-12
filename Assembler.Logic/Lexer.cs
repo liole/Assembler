@@ -79,6 +79,14 @@ namespace Assembler.Logic
 				{
 					return LineType.Definition;
 				}
+				if (match.Groups["proc"].Success)
+				{
+					return LineType.Procedure;
+				}
+				if (match.Groups["endp"].Success)
+				{
+					return LineType.EndP;
+				}
 				return LineType.None;
 			}
 		}
@@ -329,6 +337,13 @@ namespace Assembler.Logic
 			return group.Success ? group.Value.ToLower() : null;
 		}
 
+		public string GetAttribute()
+		{
+			var group = match.Groups["attribute"];
+			lastCapture = group;
+			return group.Success ? group.Value.ToLower() : null;
+		}
+
 		public void Dispose()
 		{
 			reader.Dispose();
@@ -336,7 +351,7 @@ namespace Assembler.Logic
 
 		public enum LineType
 		{
-			None, Command, Definition
+			None, Command, Definition, Procedure, EndP
 		}
 
 		public enum ArgumentType
@@ -374,10 +389,13 @@ namespace Assembler.Logic
 		public static string COMMAND = $"(?<command>[a-z]+)";
 		public static string DEFINITION = "(?<definition>db|dw)";
 		public static string DEFINE_LINE = $"(?:{NAME}\\s+)?{DEFINITION}\\s+(?<value>{LITERAL}|\\?)";
-		public static string INDIRECT = $"(?<indirect>{NAME}?\\[{REG_NUM}(?:\\+{REG_NUM})*\\])";
+		public static string INDIRECT = $"(?<indirect>{NAME}?\\[{REG_NUM}(?:(?:\\+|(?=-)){REG_NUM})*\\])";
 		public static string ARGUMENT = $"(?<argument>{REGISTER}|{NUMBER}|{NAME}|{INDIRECT})";
 		public static string COMMAND_LINE = $"{COMMAND}(?:\\s+{ARGUMENT})?(?:\\s*,\\s*{ARGUMENT})*";
-		public static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
+		public static string PROC_BEGIN = $"(?<proc>{NAME}\\s+proc(?:\\s+(?<attribute>inline))?)";
+		public static string PROC_END = $"(?<endp>{NAME}\\s+endp)";
+		public static string PROC_LINE = $"{PROC_BEGIN}|{PROC_END}";
+		public static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{PROC_LINE}|{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
 	
 	}
 }

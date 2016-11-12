@@ -14,14 +14,19 @@ namespace Assembler.Logic.Commands
 
 		byte[] assemble(MemoryManager mgr)
 		{
-			byte cmd8bit = 0xeb;
-			byte cmd16bit = 0xe9;
 			if (!mgr.IsLabelDecalared(LabelName))
 			{
 				throw new Exceptions.LabelNotDeclaredException(LabelName, "JMP", Capture);
 			}
 			Int16 from = mgr.Pointer;
 			Int16 to = mgr.Labels[LabelName];
+			return JMP.Code(from, to);
+		}
+
+		public static byte[] Code(Int16 from, Int16 to)
+		{
+			byte cmd8bit = 0xeb;
+			byte cmd16bit = 0xe9;
 			var shift = (Int16)(to - (from + 2));  // 8bit jump
 			if ((sbyte)shift == shift)
 			{

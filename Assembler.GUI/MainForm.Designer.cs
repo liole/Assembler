@@ -85,6 +85,7 @@
 			// 
 			// editor
 			// 
+			this.editor.AllowMacroRecording = false;
 			this.editor.AutoCompleteBracketsList = new char[] {
         '(',
         ')',
@@ -96,7 +97,7 @@
         '\"',
         '\'',
         '\''};
-			this.editor.AutoScrollMinSize = new System.Drawing.Size(389, 770);
+			this.editor.AutoScrollMinSize = new System.Drawing.Size(389, 854);
 			this.editor.BackBrush = null;
 			this.editor.CharHeight = 14;
 			this.editor.CharWidth = 8;
@@ -104,7 +105,6 @@
 			this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.editor.IsReplaceMode = false;
 			this.editor.LeftPadding = 90;
 			this.editor.Location = new System.Drawing.Point(0, 49);
@@ -376,6 +376,7 @@
 			// 
 			// undoToolStripMenuItem
 			// 
+			this.undoToolStripMenuItem.Enabled = false;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
 			this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
@@ -383,6 +384,7 @@
 			// 
 			// redoToolStripMenuItem
 			// 
+			this.redoToolStripMenuItem.Enabled = false;
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
 			this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);

@@ -15,6 +15,8 @@ namespace Assembler.Logic.Commands
 			commands = new Dictionary<string, Func<ILineInfo, Command>>();
 			commands["org"] = ORG.Create;
 			commands["int"] = INT.Create;
+			commands["ret"] = RET.Create;
+			commands["call"] = CALL.Create;
 
 			commands["mov"] = MOV.Create;
 			commands["lea"] = LEA.Create;
@@ -28,6 +30,9 @@ namespace Assembler.Logic.Commands
 			commands["imul"] = IMUL.Create;
 			commands["div"] = DIV.Create;
 			commands["idiv"] = IDIV.Create;
+			commands["inc"] = INC.Create;
+			commands["dec"] = DEC.Create;
+			commands["cmp"] = SUB.Create;
 
 			commands["jmp"] = JMP.Create;
 			commands["loop"] = LOOP.Create;
