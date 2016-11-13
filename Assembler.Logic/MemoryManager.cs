@@ -11,7 +11,7 @@ namespace Assembler.Logic
 		public Int16 Pointer { get; private set; }
 		public Dictionary<string, Int16> Labels { get; private set; }
 		public Dictionary<string, Int16> Variables { get; private set; }
-		public Dictionary<string, Definition.DefinitionType> VariableTypes { get; private set; }
+		public Dictionary<string, DefinitionType> VariableTypes { get; private set; }
 		public Dictionary<string, Int16> Procedures { get; private set; }
 		public Dictionary<string, Int16> ProcedureEnds { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Assembler.Logic
 			Pointer = 0;
 			Labels = new Dictionary<string, Int16>();
 			Variables = new Dictionary<string, Int16>();
-			VariableTypes = new Dictionary<string, Definition.DefinitionType>();
+			VariableTypes = new Dictionary<string, DefinitionType>();
 			Procedures = new Dictionary<string, Int16>();
 			ProcedureEnds = new Dictionary<string, Int16>();
 		}
@@ -44,7 +44,7 @@ namespace Assembler.Logic
 			Labels[name] = UndefinedAddress;
 		}
 
-		public void DeclareVariable(string name, Definition.DefinitionType type)
+		public void DeclareVariable(string name, DefinitionType type)
 		{
 			Variables[name] = UndefinedAddress;
 			VariableTypes[name] = type;

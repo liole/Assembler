@@ -71,10 +71,9 @@ namespace Assembler.Logic
 			line.GetName(); // can be RedefinedException later, point to variable name
 			return def;
 		}
-
-		public enum DefinitionType
-		{
-			Byte, Word
-		}
+	}
+	public enum DefinitionType
+	{
+		Byte, Word
 	}
 }

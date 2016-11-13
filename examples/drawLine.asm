@@ -1,12 +1,50 @@
 org 100h
 
-exit proc inline
+call setVideoMode
+
+push x1
+push y1
+push x2
+push y2
+push red
+call drawLine
+
+push x2
+push y2
+push x3
+push y3
+push green
+call drawLine
+
+push x3
+push y3
+push x1
+push y1
+push blue
+call drawLine
+
+call exit
+
+x1 dw 160
+y1 dw 50
+
+x2 dw 100
+y2 dw 150
+
+x3 dw 220
+y3 dw 120
+
+red   dw 100b
+green dw 010b
+blue  dw 001b
+
+exit proc
     mov ax, 0x4c00
     int 21h
     ret
 exit endp
 
-abs proc inline ; (ax := |ax|)
+abs proc ; (ax := |ax|)
     sub ax, 0
     jg abs_return
     imul ax, -1
@@ -14,20 +52,20 @@ abs proc inline ; (ax := |ax|)
     ret
 abs endp
 
-setVideoMode proc inline
+setVideoMode proc
     mov     ah, 0       ; set display mode function.
     mov     al, 13h     ; mode 13h = 320x200 pixels, 256 colors.
     int     10h         ; set it!
     ret
 setVideoMode endp
 
-drawPixel proc inline ; (int x, int y, color)
+drawPixel proc ; (int x, int y, color)
     push bp
     mov bp, sp
     
     mov     cx, [bp+8]      ; column
     mov     dx, [bp+6]      ; row
-    mov     al, [bp+4]      ; white
+    mov     al, [bp+4]      ; color
     mov     ah, 0ch     ; put pixel
     int     10h         ; draw pixel
     
@@ -35,7 +73,7 @@ drawPixel proc inline ; (int x, int y, color)
     ret 6
 drawPixel endp
 
-drawLine proc inline ; (int x1, int y1, int x2, int y2, int color)
+drawLine proc ; (int x1, int y1, int x2, int y2, int color)
     push bp
     mov bp, sp
     
@@ -131,45 +169,6 @@ drawLine proc inline ; (int x1, int y1, int x2, int y2, int color)
     pop bp
     ret 10
 drawLine endp
-
-
-call setVideoMode
-
-push x1
-push y1
-push x2
-push y2
-push red
-call drawLine
-
-push x2
-push y2
-push x3
-push y3
-push green
-call drawLine
-
-push x3
-push y3
-push x1
-push y1
-push blue
-call drawLine
-
-call exit
-
-x1 dw 160
-y1 dw 50
-
-x2 dw 100
-y2 dw 170
-
-x3 dw 220
-y3 dw 120
-
-red   dw 4
-green dw 2
-blue  dw 1
 
 
 

@@ -168,6 +168,94 @@ namespace Assembler.Logic
 			}
 		}
 
+		public class VariableInfo
+		{
+			public string Name { get; set; }
+			public DefinitionType Type { get; set; }
+			public int Line { get; set; }
+			public Int16 Address { get; set; }
+		}
+		public VariableInfo[] VariablesInfo
+		{
+			get
+			{
+				var result = new List<VariableInfo>();
+				var variables = program.OfType<Definition>();
+				foreach (var name in memoryManager.Variables.Keys)
+				{
+					result.Add(new VariableInfo()
+						{
+							Name = name,
+							Type = memoryManager.VariableTypes[name],
+							Address = memoryManager.Variables[name],
+							Line = variables.First(d => d.Name == name).LineNumber + 1
+						});
+				}
+				return result.ToArray();
+			}
+		}
+
+		public class LabelInfo
+		{
+			public string Name { get; set; }
+			public int Line { get; set; }
+			public Int16 Address { get; set; }
+		}
+		public LabelInfo[] LabelsInfo
+		{
+			get
+			{
+				var result = new List<LabelInfo>();
+				var labels = program.OfType<Label>();
+				foreach (var name in memoryManager.Labels.Keys)
+				{
+					result.Add(new LabelInfo()
+					{
+						Name = name,
+						Address = memoryManager.Labels[name],
+						Line = labels.First(l => l.Name == name).LineNumber + 1
+					});
+				}
+				return result.ToArray();
+			}
+		}
+
+		public class ProcedureInfo
+		{
+			public string Name { get; set; }
+			public int Line { get; set; }
+			public Int16 Address { get; set; }
+		}
+		public ProcedureInfo[] ProceduresInfo
+		{
+			get
+			{
+				var result = new List<ProcedureInfo>();
+				var procedures = program.OfType<Procedure>();
+				foreach (var name in memoryManager.Procedures.Keys)
+				{
+					result.Add(new ProcedureInfo()
+					{
+						Name = name,
+						Address = memoryManager.Procedures[name],
+						Line = procedures.First(p => p.Name == name).LineNumber + 1
+					});
+				}
+				return result.ToArray();
+			}
+		}
+
+		public int SymbolsCount
+		{
+			get
+			{
+				var variables = memoryManager.Variables.Count;
+				var labels = memoryManager.Labels.Count;
+				var procedures = memoryManager.Procedures.Count;
+				return variables + labels + procedures;
+			}
+		}
+
 		private void program_ExceptionHandler(Exceptions.LineException e)
 		{
 			if (ExceptionHandler != null)

@@ -11,5 +11,4 @@ int 21h
 
 msg  db 'Hello world!'
      db 10
-     db 13
      db '$'

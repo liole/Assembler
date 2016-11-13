@@ -34,7 +34,7 @@ namespace Assembler.Logic.Arguments
 		{
 			get
 			{
-				return mgr.VariableTypes[Name] == Definition.DefinitionType.Word;
+				return mgr.VariableTypes[Name] == DefinitionType.Word;
 			}
 		}
 

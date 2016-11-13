@@ -90,7 +90,7 @@ namespace Assembler.Logic.Arguments
 				{
 					return true;
 				}
-				return mgr.VariableTypes[Name] == Definition.DefinitionType.Word;
+				return mgr.VariableTypes[Name] == DefinitionType.Word;
 			}
 		}
 
