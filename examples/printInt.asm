@@ -1,4 +1,4 @@
-org 100h
+﻿org 100h
 
 push value
 call printInt
@@ -50,7 +50,7 @@ printInt proc ; (int num)
     
     pop bp
     ret 2
-    printIntData db '      $' ; reserved for number max 32767
+    printIntData db '      $' ; reserved for 16 bit number
 printInt endp
 
 

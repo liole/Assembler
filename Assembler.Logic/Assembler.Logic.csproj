@@ -76,6 +76,7 @@
     <Compile Include="Exceptions\ExceptionHandlerArgs.cs" />
     <Compile Include="Exceptions\ProcedureNotDeclaredException.cs" />
     <Compile Include="Exceptions\ProcedureAlreadyEndedException.cs" />
+    <Compile Include="Exceptions\ProcedureDoesNotReturn.cs" />
     <Compile Include="Exceptions\ProcedureRedeclaredException.cs" />
     <Compile Include="Exceptions\TooManyRegistersException.cs" />
     <Compile Include="Exceptions\RegisterCombinationNotSupportedException.cs" />

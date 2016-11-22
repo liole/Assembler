@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assembler.Logic
 {
-	class MemoryManager
+	public class MemoryManager
 	{
 		public Int16 Pointer { get; private set; }
 		public Dictionary<string, Int16> Labels { get; private set; }
@@ -14,6 +14,9 @@ namespace Assembler.Logic
 		public Dictionary<string, DefinitionType> VariableTypes { get; private set; }
 		public Dictionary<string, Int16> Procedures { get; private set; }
 		public Dictionary<string, Int16> ProcedureEnds { get; private set; }
+		public Dictionary<string, bool> ProcedureReturns { get; set; }
+
+		private List<string> currentProcedures = new List<string>();
 
 		public static Int16 UndefinedAddress = -1; //0xffff;
 
@@ -25,6 +28,7 @@ namespace Assembler.Logic
 			VariableTypes = new Dictionary<string, DefinitionType>();
 			Procedures = new Dictionary<string, Int16>();
 			ProcedureEnds = new Dictionary<string, Int16>();
+			ProcedureReturns = new Dictionary<string, bool>();
 		}
 
 		public Int16 MovePointer(Int16 offset)
@@ -80,6 +84,11 @@ namespace Assembler.Logic
 			return ProcedureEnds.ContainsKey(name);
 		}
 
+		public bool DoesProcedureReturn(string name)
+		{
+			return ProcedureReturns.ContainsKey(name);
+		}
+
 		public Int16 DefineLabel(string name)
 		{
 			Labels[name] = Pointer;
@@ -95,13 +104,28 @@ namespace Assembler.Logic
 		public Int16 DefineProcedure(string name)
 		{
 			Procedures[name] = Pointer;
+			currentProcedures.Add(name);
 			return Pointer;
 		}
 
 		public Int16 EndProcedureDefinition(string name)
 		{
 			ProcedureEnds[name] = Pointer;
+			currentProcedures.RemoveAt(currentProcedures.Count - 1);
 			return Pointer;
+		}
+
+		public void ReturnFromProcedure(string name)
+		{
+			ProcedureReturns[name] = true;
+		}
+
+		public void ReturnFromProcedure()
+		{
+			if (currentProcedures.Count != 0)
+			{
+				ReturnFromProcedure(currentProcedures.Last());
+			}
 		}
 	}
 }

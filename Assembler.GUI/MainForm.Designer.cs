@@ -72,6 +72,9 @@
 			this.opCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.errorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.symbolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
+			this.autoHideErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoShowErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
 			this.collapseAllBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.expandAllBlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,13 +83,9 @@
 			this.programToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.githHubPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -162,7 +161,7 @@
         '\"',
         '\'',
         '\''};
-			this.editor.AutoScrollMinSize = new System.Drawing.Size(389, 854);
+			this.editor.AutoScrollMinSize = new System.Drawing.Size(285, 140);
 			this.editor.BackBrush = null;
 			this.editor.CharHeight = 14;
 			this.editor.CharWidth = 8;
@@ -170,7 +169,6 @@
 			this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
 			this.editor.IsReplaceMode = false;
 			this.editor.LeftPadding = 90;
 			this.editor.Location = new System.Drawing.Point(0, 49);
@@ -180,7 +178,8 @@
 			this.editor.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("editor.ServiceColors")));
 			this.editor.Size = new System.Drawing.Size(431, 299);
 			this.editor.TabIndex = 4;
-			this.editor.Text = resources.GetString("editor.Text");
+			this.editor.Text = "org 100h\r\n\r\n; put your code here\r\n\r\n; exit\r\nmov ax, 0x4c00\r\nint 21h\r\n\r\n; put yor " +
+    "data here\r\n";
 			this.editor.Zoom = 100;
 			this.editor.ToolTipNeeded += new System.EventHandler<FastColoredTextBoxNS.ToolTipNeededEventArgs>(this.editor_ToolTipNeeded);
 			this.editor.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.editor_TextChanged);
@@ -347,6 +346,8 @@
 			this.helpToolStripButton.Name = "helpToolStripButton";
 			this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.helpToolStripButton.Text = "He&lp";
+			this.helpToolStripButton.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
+			this.helpToolStripButton.DoubleClick += new System.EventHandler(this.helpToolStripButton_Click);
 			// 
 			// menuStrip
 			// 
@@ -356,7 +357,6 @@
             this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.programToolStripMenuItem,
-            this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
@@ -542,6 +542,9 @@
             this.opCodeToolStripMenuItem,
             this.errorsToolStripMenuItem,
             this.symbolsToolStripMenuItem,
+            this.toolStripMenuItem11,
+            this.autoHideErrorsToolStripMenuItem,
+            this.autoShowErrorsToolStripMenuItem,
             this.toolStripMenuItem9,
             this.collapseAllBlocksToolStripMenuItem,
             this.expandAllBlocksToolStripMenuItem,
@@ -573,6 +576,27 @@
 			this.symbolsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.symbolsToolStripMenuItem.Text = "&Symbols";
 			this.symbolsToolStripMenuItem.Click += new System.EventHandler(this.symbolsToolStripMenuItem_Click);
+			// 
+			// toolStripMenuItem11
+			// 
+			this.toolStripMenuItem11.Name = "toolStripMenuItem11";
+			this.toolStripMenuItem11.Size = new System.Drawing.Size(168, 6);
+			// 
+			// autoHideErrorsToolStripMenuItem
+			// 
+			this.autoHideErrorsToolStripMenuItem.Checked = true;
+			this.autoHideErrorsToolStripMenuItem.CheckOnClick = true;
+			this.autoHideErrorsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.autoHideErrorsToolStripMenuItem.Name = "autoHideErrorsToolStripMenuItem";
+			this.autoHideErrorsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+			this.autoHideErrorsToolStripMenuItem.Text = "Auto hide errors";
+			// 
+			// autoShowErrorsToolStripMenuItem
+			// 
+			this.autoShowErrorsToolStripMenuItem.CheckOnClick = true;
+			this.autoShowErrorsToolStripMenuItem.Name = "autoShowErrorsToolStripMenuItem";
+			this.autoShowErrorsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+			this.autoShowErrorsToolStripMenuItem.Text = "Auto show errors";
 			// 
 			// toolStripMenuItem9
 			// 
@@ -631,67 +655,44 @@
 			this.runToolStripMenuItem.Text = "Run";
 			this.runToolStripMenuItem.Click += new System.EventHandler(this.runButton_Click);
 			// 
-			// toolsToolStripMenuItem
-			// 
-			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.customizeToolStripMenuItem,
-            this.optionsToolStripMenuItem});
-			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-			this.toolsToolStripMenuItem.Text = "&Tools";
-			// 
-			// customizeToolStripMenuItem
-			// 
-			this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-			this.customizeToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-			this.customizeToolStripMenuItem.Text = "&Customize";
-			// 
-			// optionsToolStripMenuItem
-			// 
-			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-			this.optionsToolStripMenuItem.Text = "&Options";
-			// 
 			// helpToolStripMenuItem
 			// 
 			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contentsToolStripMenuItem,
-            this.indexToolStripMenuItem,
-            this.searchToolStripMenuItem,
+            this.viewHelpToolStripMenuItem,
+            this.githHubPageToolStripMenuItem,
             this.toolStripSeparator8,
             this.aboutToolStripMenuItem});
 			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
 			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
 			this.helpToolStripMenuItem.Text = "&Help";
 			// 
-			// contentsToolStripMenuItem
+			// viewHelpToolStripMenuItem
 			// 
-			this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-			this.contentsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-			this.contentsToolStripMenuItem.Text = "&Contents";
+			this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
+			this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
+			this.viewHelpToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+			this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.viewHelpToolStripMenuItem.Text = "View Help";
+			this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
 			// 
-			// indexToolStripMenuItem
+			// githHubPageToolStripMenuItem
 			// 
-			this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-			this.indexToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-			this.indexToolStripMenuItem.Text = "&Index";
-			// 
-			// searchToolStripMenuItem
-			// 
-			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-			this.searchToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-			this.searchToolStripMenuItem.Text = "&Search";
+			this.githHubPageToolStripMenuItem.Name = "githHubPageToolStripMenuItem";
+			this.githHubPageToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.githHubPageToolStripMenuItem.Text = "GithHub page";
+			this.githHubPageToolStripMenuItem.Click += new System.EventHandler(this.githHubPageToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(119, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(145, 6);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
 			this.aboutToolStripMenuItem.Text = "&About...";
+			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
 			// statusStrip1
 			// 
@@ -730,7 +731,7 @@
 			this.programInfoLine.Name = "programInfoLine";
 			this.programInfoLine.Size = new System.Drawing.Size(456, 19);
 			this.programInfoLine.Spring = true;
-			this.programInfoLine.Text = "Program: {0:0.#} {1}, Code {2:0.#} {3} | ratio = {4:0.##}";
+			this.programInfoLine.Text = "Program: {0:0.#} {1}, Source {2:0.#} {3} | ratio = {4:0.##}";
 			this.programInfoLine.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// zoomBtn
@@ -842,7 +843,7 @@
 			this.errorsTable.AllowUserToDeleteRows = false;
 			this.errorsTable.AllowUserToResizeRows = false;
 			this.errorsTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.errorsTable.BackgroundColor = System.Drawing.Color.Silver;
+			this.errorsTable.BackgroundColor = System.Drawing.Color.White;
 			this.errorsTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.errorsTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.errorsTable.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -967,7 +968,7 @@
 			this.proceduresTable.AllowUserToDeleteRows = false;
 			this.proceduresTable.AllowUserToResizeRows = false;
 			this.proceduresTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.proceduresTable.BackgroundColor = System.Drawing.Color.Silver;
+			this.proceduresTable.BackgroundColor = System.Drawing.Color.White;
 			this.proceduresTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.proceduresTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.proceduresTable.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1021,7 +1022,7 @@
 			this.labelsTable.AllowUserToDeleteRows = false;
 			this.labelsTable.AllowUserToResizeRows = false;
 			this.labelsTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.labelsTable.BackgroundColor = System.Drawing.Color.Silver;
+			this.labelsTable.BackgroundColor = System.Drawing.Color.White;
 			this.labelsTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.labelsTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.labelsTable.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1075,7 +1076,7 @@
 			this.variablesTable.AllowUserToDeleteRows = false;
 			this.variablesTable.AllowUserToResizeRows = false;
 			this.variablesTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.variablesTable.BackgroundColor = System.Drawing.Color.Silver;
+			this.variablesTable.BackgroundColor = System.Drawing.Color.White;
 			this.variablesTable.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.variablesTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.variablesTable.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1177,7 +1178,9 @@
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.toolStrip);
 			this.Controls.Add(this.menuStrip);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip;
+			this.MinimumSize = new System.Drawing.Size(400, 300);
 			this.Name = "MainForm";
 			this.Text = "Assembler GUI";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -1243,13 +1246,7 @@
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem contentsToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem programToolStripMenuItem;
@@ -1310,5 +1307,10 @@
 		private System.Windows.Forms.ToolStripMenuItem expandAllBlocksToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem10;
 		private System.Windows.Forms.ToolStripMenuItem zoomTo100ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem githHubPageToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem11;
+		private System.Windows.Forms.ToolStripMenuItem autoHideErrorsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoShowErrorsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
 	}
 }

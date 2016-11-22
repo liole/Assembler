@@ -19,6 +19,10 @@ namespace Assembler.Logic
 			if (End)
 			{
 				mgr.EndProcedureDefinition(Name);
+				if (!mgr.DoesProcedureReturn(Name))
+				{
+					throw new Exceptions.ProcedureDoesNotReturn(Name);
+				}
 			}
 			else
 			{

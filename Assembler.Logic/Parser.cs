@@ -53,6 +53,16 @@ namespace Assembler.Logic
 								var procedure = Procedure.Create(lexer);
 								program.Add(procedure);
 								break;
+							case Lexer.LineType.Directive:
+								var directiveName = lexer.Directive;
+								switch (directiveName)
+								{
+								case "return":
+									var ret = Commands.RET.CreateEmpty(lexer);
+									program.Add(ret);
+									break;
+								}
+								break;
 						}
 					}
 					catch(Exceptions.LineException e)

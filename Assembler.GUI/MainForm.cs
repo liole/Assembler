@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Assembler.Logic;
 using FastColoredTextBoxNS;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Assembler.GUI
 {
@@ -24,6 +26,8 @@ namespace Assembler.GUI
 		TextStyle numberStyle = new TextStyle(Brushes.DarkMagenta, null, FontStyle.Regular);
 		TextStyle stringStyle = new TextStyle(Brushes.DarkOrange, null, FontStyle.Regular);
 		TextStyle commentStyle = new TextStyle(Brushes.Green, null, FontStyle.Italic);
+		TextStyle knownDirectiveStyle = new TextStyle(Brushes.Teal, null, FontStyle.Bold);
+		TextStyle directiveStyle = new TextStyle(Brushes.Gray, null, FontStyle.Regular);
 		Style errorlineStyle = new WavyLineStyle(255, Color.Red);
 
 		public MainForm()
@@ -53,11 +57,61 @@ namespace Assembler.GUI
 			return compiler.Exceptions.Count == 0;
 		}
 
+		private string getPGMName()
+		{
+			if (FileName != null)
+			{
+				var name = Path.GetFileNameWithoutExtension(FileName);
+				if (name.Length <= 8)
+				{
+					return name.ToUpper();
+				}
+				var partName = name.Substring(0, 6);
+				var shortName = String.Format("{0}~2", partName);
+				return shortName;
+			}
+			else
+			{
+				return "PGM";
+			}
+		}
+
+		private string getComFileName()
+		{
+			if (FileName != null)
+			{
+				var dir = Path.GetDirectoryName(FileName);
+				var name = Path.GetFileNameWithoutExtension(FileName);
+				var nameWithExt = String.Format("{0}.com", name);
+				var path = Path.Combine(new[] { dir, nameWithExt });
+				return path;
+			}
+			else
+			{
+				return "PGM.COM";
+			}
+		}
+
+		private string getBatFileName()
+		{
+
+			var dir = FileName == null ? "" : Path.GetDirectoryName(FileName);
+			var path = Path.Combine(new[] { dir, "RUN.BAT" });
+			return path;
+		}
+
+		private string getDOSBoxPath()
+		{
+			var currPath = Path.GetDirectoryName(Application.ExecutablePath);
+			var path = Path.Combine(new[] { currPath, "DOSBox", "dosbox.exe" });
+			return path;
+		}
+
 		private bool build()
 		{
 			if (compile())
 			{
-				System.IO.File.WriteAllBytes("PGM.COM", compiler.Program.Code);
+				File.WriteAllBytes(getComFileName(), compiler.Program.Code);
 				return true;
 			}
 			return false;
@@ -67,14 +121,22 @@ namespace Assembler.GUI
 		{
 			if (build())
 			{
-				System.IO.File.WriteAllText("PGM.BAT",
+				
+				var batFile = getBatFileName();
+				if (File.Exists(batFile))
+				{
+					File.SetAttributes(batFile, File.GetAttributes(batFile) & ~System.IO.FileAttributes.Hidden);
+				}
+				File.WriteAllText(batFile,
 @"@echo off
 CLS
-PGM
+" + getPGMName() + @"
 PAUSE
 EXIT"
 				);
-				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\DOSBox-0.74\dosbox", "PGM.BAT -noconsole");
+				File.SetAttributes(batFile, File.GetAttributes(batFile) | System.IO.FileAttributes.Hidden);
+				System.Diagnostics.Process.Start(getDOSBoxPath(), 
+					String.Format("\"{0}\" -noconsole", batFile));
 			}
 		}
 
@@ -100,6 +162,36 @@ EXIT"
 			drawCodeBox(e);
 
 			int padding = 5;
+			var line = editor.Lines[e.LineIndex].Trim();
+			if (line.IndexOf("#address", StringComparison.OrdinalIgnoreCase) >= 0)
+			{
+				var address = compiler.Program.LineAddress(e.LineIndex);
+				var colorName = line.Length > 9
+					? line.Substring(9).Trim()
+					: "royalblue";
+				Color color;
+				try
+				{
+					color = System.Drawing.ColorTranslator.FromHtml(colorName);
+				}
+				catch(Exception)
+				{
+					color = Color.Transparent;
+				}
+				var addrStr = String.Format("@{0:X4}", address);
+				e.Graphics.DrawString(
+					addrStr,
+					new Font(editor.Font.FontFamily, editor.Font.Size, FontStyle.Bold, editor.Font.Unit),
+					new SolidBrush(color),
+					new Rectangle(padding, e.LineRect.Top, editor.LeftPadding - padding, e.LineRect.Height),
+					new StringFormat()
+					{
+						FormatFlags = StringFormatFlags.NoWrap,
+						Trimming = StringTrimming.EllipsisCharacter
+					}
+				);
+				return;
+			}
 			if (e.LineIndex >= codeLines.Length || editor.LeftPadding <= padding)
 			{
 				return;
@@ -122,12 +214,17 @@ EXIT"
 		private void editor_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			e.ChangedRange.ClearStyle(commentStyle, stringStyle, keywordStyle, registerStyle, numberStyle);
+			e.ChangedRange.ClearFoldingMarkers();
 
-			e.ChangedRange.SetStyle(stringStyle, Lexer.STRING_LITERAL);
+			e.ChangedRange.SetStyle(stringStyle, Lexer.STRING_LITERAL+"|<[^>]+>");
 			e.ChangedRange.SetStyle(commentStyle, ";.*$", RegexOptions.Multiline);
+			e.ChangedRange.SetStyle(knownDirectiveStyle, "#(address|return|region|endregion)\\b", RegexOptions.IgnoreCase);
+			e.ChangedRange.SetStyle(directiveStyle, "#[^;]*");
 			e.ChangedRange.SetStyle(keywordStyle, "\\b(" + Lexer.COMMAND_LIST + "|db|dw|proc|endp|inline)\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(registerStyle, "\\b" + Lexer.REGISTER + "\\b", RegexOptions.IgnoreCase);
 			e.ChangedRange.SetStyle(numberStyle, "\\b" + Lexer.NUMBER + "\\b", RegexOptions.IgnoreCase);
+
+			e.ChangedRange.SetFoldingMarkers("#region\\b", "#endregion\\b", RegexOptions.IgnoreCase);
 
 			updateTitle();
 		}
@@ -176,6 +273,15 @@ EXIT"
 				? Color.Transparent
 				: Color.Tomato;
 			errorsTable.CurrentCell = null;
+
+			if (autoHideErrorsToolStripMenuItem.Checked && errorData.Count() == 0)
+			{
+				errorPanel.Hide();
+			}
+			if (autoShowErrorsToolStripMenuItem.Checked && errorData.Count() > 0)
+			{
+				errorPanel.Show();
+			}
 		}
 
 		private void markErrors()
@@ -252,6 +358,7 @@ EXIT"
 				editor[proc.Start].FoldingStartMarker = markerName;
 				editor[proc.End].FoldingEndMarker = markerName;
 			}
+			editor.Range.SetFoldingMarkers("#region\\b", "#endregion\\b");
 		}
 
 		private void setProgramInfo(byte[] code, string text)
@@ -270,7 +377,7 @@ EXIT"
 			//	codL /= 1024;
 			//	codT = "Kb";
 			//}
-			programInfoLine.Text = String.Format("Program: {0:0.#} {1}, Code {2:0.#} {3} | ratio = {4:0.##}",
+			programInfoLine.Text = String.Format("Binary: {0:0.#} {1}, Source {2:0.#} {3} | ratio = {4:0.##}",
 				pgmL, pgmT, codL, codT, (double)text.Length / code.Length);
 		}
 
@@ -492,8 +599,10 @@ EXIT"
 		{
 			if (askForSave())
 			{
+				editor.Text = "";
 				editor.IsChanged = false;
 				FileName = null;
+				compile();
 			}
 		}
 
@@ -537,6 +646,7 @@ EXIT"
 					var fileName = openFileDialog.FileName;
 					editor.OpenFile(fileName);
 					FileName = fileName;
+					compile();
 				}
 			}
 		}
@@ -699,6 +809,33 @@ EXIT"
 		private void zoomTo100ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			setZoom(100);
+		}
+
+		private void helpToolStripButton_Click(object sender, EventArgs e)
+		{
+			Clipboard.SetText(editor.Html);
+		}
+
+		private void githHubPageToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://github.com/liole/Assembler");
+		}
+
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AboutBox().ShowDialog();
+		}
+
+		private string getHelpPath()
+		{
+			var currPath = Path.GetDirectoryName(Application.ExecutablePath);
+			var path = Path.Combine(new[] { currPath, "help", "index.html" });
+			return path;
+		}
+
+		private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start(getHelpPath());
 		}
 	}
 }

@@ -1,0 +1,74 @@
+body {
+	width: calc(100% - 20px);
+	margin: 10px auto;
+	font-family: 'Verdana';
+}
+
+.title {
+	text-align: center;
+	color: #0055aa;
+	margin-bottom: 0px;
+}
+.subtitle {
+	text-align: center;
+}
+
+.contents {
+	list-style: none;
+}
+.contents > li:before {
+	content: '»';
+	margin-right: .5em;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+	display: inline-block;
+	padding: 3px;
+}
+a:visited {
+    color: black;
+}
+a:hover {
+    color: black;
+	text-decoration: underline;
+}
+a:active {
+    color: black;
+}
+
+hr {
+  border: 1px solid #aaa;
+}
+
+pre {
+	margin: 0px 10px;
+}
+pre.code{
+	position: relative;
+	display: block;
+	padding: 10px;
+	border: 1px solid #aaa;
+}
+pre.code:before {
+	content: 'Code';
+	position: absolute;
+	top: -15px;
+	padding: 5px;
+	background-color: #fff;
+}
+.note {
+	display: block;
+	font-size: 10pt;
+	margin-left: 20px;
+}
+
+@media screen and (min-width: 600px) {
+	body {
+		width: 600px;
+	}
+	pre {
+		margin: 0px 50px;
+	}
+}

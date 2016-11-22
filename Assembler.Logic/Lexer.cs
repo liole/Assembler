@@ -87,6 +87,10 @@ namespace Assembler.Logic
 				{
 					return LineType.EndP;
 				}
+				if (match.Groups["directive"].Success)
+				{
+					return LineType.Directive;
+				}
 				return LineType.None;
 			}
 		}
@@ -124,6 +128,16 @@ namespace Assembler.Logic
 			get
 			{
 				var group = match.Groups["definition"];
+				lastCapture = group;
+				return group.Success ? group.Value.ToLower() : null;
+			}
+		}
+
+		public string Directive
+		{
+			get
+			{
+				var group = match.Groups["directive"];
 				lastCapture = group;
 				return group.Success ? group.Value.ToLower() : null;
 			}
@@ -351,7 +365,7 @@ namespace Assembler.Logic
 
 		public enum LineType
 		{
-			None, Command, Definition, Procedure, EndP
+			None, Command, Definition, Procedure, EndP, Directive
 		}
 
 		public enum ArgumentType
@@ -395,7 +409,8 @@ namespace Assembler.Logic
 		public static string PROC_BEGIN = $"(?<proc>{NAME}\\s+proc(?:\\s+(?<attribute>inline))?)";
 		public static string PROC_END = $"(?<endp>{NAME}\\s+endp)";
 		public static string PROC_LINE = $"{PROC_BEGIN}|{PROC_END}";
-		public static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{PROC_LINE}|{DEFINE_LINE}|{COMMAND_LINE})?\\s*(?:;(?<comment>.*))?$";
+		public static string DIRECTIVE_LINE = "#(?<directive>[^;]*)";
+		public static string LINE = $"^\\s*(?:(?<label>{NAME})\\s*:)?\\s*(?:{PROC_LINE}|{DEFINE_LINE}|{COMMAND_LINE}|{DIRECTIVE_LINE})?\\s*(?:;(?<comment>.*))?$";
 	
 	}
 }

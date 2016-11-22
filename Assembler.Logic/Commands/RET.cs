@@ -13,6 +13,7 @@ namespace Assembler.Logic.Commands
 
 		byte[] assemble(MemoryManager mgr)
 		{
+			mgr.ReturnFromProcedure();
 			var res = new List<byte>();
 			if (Argument1 == null)
 			{
@@ -24,6 +25,12 @@ namespace Assembler.Logic.Commands
 				res.AddRange(Argument1.GetData(true));
 			}
 			return res.ToArray();
+		}
+
+		byte[] assembleEmpty(MemoryManager mgr)
+		{
+			mgr.ReturnFromProcedure();
+			return new byte[] { };
 		}
 
 		public static RET Create(ILineInfo line)
@@ -50,6 +57,16 @@ namespace Assembler.Logic.Commands
 			{
 				throw new Exceptions.ArgumentException("RET", line.TypeOfArgument(1));
 			}
+			return cmd;
+		}
+
+		public static RET CreateEmpty(ILineInfo line)
+		{
+			var cmd = new RET()
+			{
+				LineNumber = line.LineNumber
+			};
+			cmd.Assemble = cmd.assembleEmpty;
 			return cmd;
 		}
 	}

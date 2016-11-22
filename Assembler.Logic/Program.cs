@@ -14,6 +14,7 @@ namespace Assembler.Logic
 		private MemoryManager memoryManager;
 
 		private List<byte>[] codeLines;
+		private Int16[] addressLines;
 
 		public Program()
 		{
@@ -74,7 +75,7 @@ namespace Assembler.Logic
 			}
 		}
 
-		private void initCodeLines()
+		private void initLines()
 		{
 			int lineCount = program.Count == 0 ? 0 : (program.Last().LineNumber + 1);
 			codeLines = new List<byte>[lineCount];
@@ -82,20 +83,32 @@ namespace Assembler.Logic
 			{
 				codeLines[i] = new List<byte>();
 			}
+			addressLines = new Int16[lineCount];
+		}
+
+		private void fillAddress(int from, int to, Int16 address)
+		{
+			for (int i = from; i < to; ++i)
+			{
+				addressLines[i] = address;
+			}
 		}
 
 		public byte[] Assemble()
 		{
 			memoryManager.ResetPointer();
-			initCodeLines();
+			initLines();
+			int lastlineWithoutAddress = 0;
 			foreach(var instruction in program)
 			{
 				try
 				{
+					int n = instruction.LineNumber;
+					fillAddress(lastlineWithoutAddress, n, memoryManager.Pointer);
 					var instrCode = instruction.Assemble(memoryManager);
 					memoryManager.MovePointer((Int16)instrCode.Length);
-					int n = instruction.LineNumber;
 					codeLines[n].AddRange(instrCode);
+					lastlineWithoutAddress = n;
 				}
 				catch(Exceptions.LineException e)
 				{
@@ -109,7 +122,18 @@ namespace Assembler.Logic
 					program_ExceptionHandler(e);
 				}
 			}
+			fillAddress(lastlineWithoutAddress, addressLines.Length, memoryManager.Pointer);
 			return Code;
+		}
+
+		public Int16 LineAddress(int lineNumber)
+		{
+			int n = addressLines.Length;
+			if (lineNumber >= n)
+			{
+				return n == 0 ? (Int16)0 : addressLines[n - 1];
+			}
+			return addressLines[lineNumber];
 		}
 
 		public byte[][] CodeLines

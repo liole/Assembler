@@ -16,6 +16,7 @@ namespace Assembler.Logic
 		string Label { get; }
 		string Command { get; }
 		string Definition { get; }
+		string Directive { get; }
 		string Comment { get; }
 
 		int NumberOfArguments { get; }

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Assembler help</title>
+		<meta name="viewport" content="width=device-width" />
+		<link href="style.css" rel="stylesheet">
+		<script src="smoothScroll.js"></script>
+		<script src="script.js"></script>
+	</head>
+	<body onload="makeScrollSmooth()">
+		<h1 class="title">Assembler</h1>
+		<div class="subtitle">A translator for 16-bit assembly labguage</div>
+		<h2>Contents</h2>
+		<ul class="contents">
+			<li><a href="#format" class="smoothScroll">Line format</a><ul>
+				<li><a href="#definition" class="smoothScroll">Definitions</a></li>
+				<li><a href="#definition" class="smoothScroll">Literals</a></li>
+			</ul></li>
+			<li><a href="#commands" class="smoothScroll">Supported commands</a></li>
+			<li><a href="#procedures" class="smoothScroll">Procedures</a></li>
+			<li><a href="#directives" class="smoothScroll">Directives</a></li>
+			<li><a href="#running" class="smoothScroll">Running program</a></li>
+			<li><a href="#gui" class="smoothScroll">User interface</a><ul>
+				<li><a href="#editor" class="smoothScroll">Code editor</a></li>
+				<li><a href="#panels" class="smoothScroll">Panels</a></li>
+			</ul></li>
+			<li><a href="#example" class="smoothScroll">Example</a></li>
+		</ul>
+		<hr>
+		<h2 id="format">Line format</h2>
+		<p>Each line of the program should have following format:</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#000000;">label: <font style="color:#0000ff;font-weight:bold;">CMD</font> arg1, arg2 </font><font style="color:#008000;font-style:oblique;">; comment</font></font></pre>
+		<p>Tokens can be separated by any number of space characters.</p>
+		<p>Every part if optional, but to define argument command name should be present</p>
+		<h3 id="definition">Definitions</h3>
+		<p>To define variables you can use following syntax</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#000000;">name </font><font style="color:#0000ff;font-weight:bold;">DB</font><font style="color:#000000;"> value
+name </font><font style="color:#0000ff;font-weight:bold;">D</font><font style="color:#0000ff;font-weight:bold;">W</font><font style="color:#000000;"> value</font></font></pre>
+		<p>Name field is optional, however, except the value you can use ? symbol. Value can be any supported literal.</p>
+		<h3 id="definition">Literals</h3>
+		<p>There are 2 types of literals. Strings and numbers. Strings can only be used in variable definitions and can have one of the following formats:</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#ff8c00;">'string'
+"string"</font></font></pre>
+		<p>Number literals can be used in definitions as well as in command arguments. You can use binary notation, 2 decimal and 2 hexadecimal notations:</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#8b008b;">11100100b</font><font style="color:#000000;">  - binary literal</font><font style="color:#8b008b;">
+228</font><font style="color:#000000;">, </font><font style="color:#8b008b;">228d</font><font style="color:#000000;">  - decimal literal</font><font style="color:#8b008b;">
+0E4h</font><font style="color:#000000;">, </font><font style="color:#8b008b;">0xE4</font><font style="color:#000000;"> - hexadecimal literal</font></font></pre>
+		<h2 id="commands">Supported commands</h2>
+		<p>These are command supported by assembler. Next to the name, there are argument cases, that the command can take.</p>
+<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#0000ff;font-weight:bold;">ORG</font><font style="color:#000000;">  </font><font style="color:#000000;">I</font><font style="color:#0000ff;font-weight:bold;">
+INT</font><font style="color:#000000;">  </font><font style="color:#000000;">I</font><font style="color:#0000ff;font-weight:bold;">
+RET</font><font style="color:#000000;">  </font><font style="color:#8b008b;">0</font><font style="color:#000000;">, </font><font style="color:#000000;">I</font><font style="color:#0000ff;font-weight:bold;">
+CALL</font><font style="color:#000000;"> </font><font style="color:#000000;">near</font><font style="color:#0000ff;font-weight:bold;">
+
+JMP</font><font style="color:#000000;">  </font><font style="color:#8b008b;">8</font><font style="color:#000000;">, </font><font style="color:#8b008b;">16</font><font style="color:#0000ff;font-weight:bold;">
+Jxx  </font><font style="color:#8b008b;">8</font><font style="color:#000000;">, </font><font style="color:#8b008b;">16</font><font style="color:#000000;"> (</font><font style="color:#000000;">28</font><font style="color:#000000;"> conditions)</font><font style="color:#0000ff;font-weight:bold;">
+CMP</font><font style="color:#000000;">  RR, RI, RM, MR, </font><font style="color:#000000;">MI</font><font style="color:#0000ff;font-weight:bold;">
+LOOP</font><font style="color:#000000;"> </font><font style="color:#8b008b;">8</font><font style="color:#0000ff;font-weight:bold;">
+
+POP</font><font style="color:#000000;">  R, </font><font style="color:#000000;">M</font><font style="color:#0000ff;font-weight:bold;">
+PUSH</font><font style="color:#000000;"> R, M, </font><font style="color:#000000;">I</font><font style="color:#0000ff;font-weight:bold;">
+
+LEA</font><font style="color:#000000;">  </font><font style="color:#000000;">RM</font><font style="color:#0000ff;font-weight:bold;">
+MOV</font><font style="color:#000000;">  RR, RI, RM, MR, </font><font style="color:#000000;">MI</font><font style="color:#0000ff;font-weight:bold;">
+ADD</font><font style="color:#000000;">  RR, RI, RM, MR, </font><font style="color:#000000;">MI</font><font style="color:#0000ff;font-weight:bold;">
+SUB</font><font style="color:#000000;">  RR, RI, RM, MR, </font><font style="color:#000000;">MI</font><font style="color:#0000ff;font-weight:bold;">
+DEC</font><font style="color:#000000;">  R, </font><font style="color:#000000;">M</font><font style="color:#0000ff;font-weight:bold;">
+INC</font><font style="color:#000000;">  R, </font><font style="color:#000000;">M</font><font style="color:#0000ff;font-weight:bold;">
+
+DIV</font><font style="color:#000000;">  R, </font><font style="color:#000000;">M</font><font style="color:#0000ff;font-weight:bold;">
+IDIV</font><font style="color:#000000;"> R, </font><font style="color:#000000;">M</font><font style="color:#0000ff;font-weight:bold;">
+MUL</font><font style="color:#000000;">  R, </font><font style="color:#000000;">M</font><font style="color:#0000ff;font-weight:bold;">
+IMUL</font><font style="color:#000000;"> R, M, RR, RM, </font><font style="color:#000000;">RI</font></font></pre>
+		<h2 id="procedures">Procedures</h2>
+		<p>To group frequntly used code you can define procedures.</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#000000;">name </font><font style="color:#0000ff;font-weight:bold;">proc</font><font style="color:#000000;"> </font><font style="color:#0000ff;font-weight:bold;">inline</font><font style="color:#000000;">
+    </font><font style="color:#008000;font-style:oblique;">; </font><font style="color:#008000;font-style:oblique;">proc</font><font style="color:#008000;font-style:oblique;"> body</font><font style="color:#000000;">
+    </font><font style="color:#0000ff;font-weight:bold;">ret</font><font style="color:#000000;">
+name </font><font style="color:#0000ff;font-weight:bold;">endp</font></font></pre>
+		<p>Every procedure should have RET* command with or without parameter.<span class="note">* see <a href="#directives" class="smoothScroll">Directives</a></span></p>
+		<p><font face="Courier New" style="color:#0000ff;font-weight:bold;">inline</font> attribute is optional and instructs assembler to jump over the procedure. End is determined by <font face="Courier New" style="color:#0000ff;font-weight:bold;">endp</font> keyword proceded by the name of the procedure in definition.</p>
+		<h2 id="directives">Directives</h2>
+		<p>Directives are used to control assembler behavior, not compilation process itself.</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#008080;font-weight:bold;">#region</font><font style="color:#808080;"> name</font><font style="color:#008080;font-weight:bold;">
+#endregion</font></font></pre>
+		<p>Defines code folding block. It can have a name or not.</p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#008080;font-weight:bold;">#address</font><font style="color:#808080;"> color</font></font></pre>
+		<p>This will show address of current line in OpCode* panel of Assembler GUI. It has optional parameter to specify display color of address. You can use diffrent colors to group addresses.<span class="note">* see <a href="#panels" class="smoothScroll">Use interface/Panels</a></span></p>
+		<pre><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#008080;font-weight:bold;">#return</font></font></pre>
+		<p>This directive supresses error about RET in the procedure. If you, for any reason, want to have procedure without return, use this.</p>
+		<h2 id="running">Running program</h2>
+		<p>To run 16 bit COM programs assembler uses DOS Box (v0.74). It is located in DOSBox folder of main executable directory. If you want to use another version, just put it into that folder. On the other hand you can run generated COM file directly if your operation system supports DOS executables.</p>
+		<h2 id="gui">User interface</h2>
+		<p>Graphical user interface(GUI) provides basic functionality to write programs in assembly language</p>
+		<p>You can use IO operations(New, Open, Save, Save As), Text operations(Copy, Cut, Paste, Find, Replace), History operations(Undo, Redo). Main operations of assembler is Buid(Create executable file out of program text) and Run(Build and execute that COM file).</p>
+		<h3 id="editor">Code editor</h3>
+		<p>Main component of GUI is code editor with syntax highlighting.</p>
+		<p>It support a number of features, including code folding(procedures and custom*), Multiline editing(Shit+Alt), Block commenting(Ctrl+Shift+C), etc.<span class="note">* see <a href="#directives" class="smoothScroll">Directives</a></span></p>
+		<p>In status line you can see current code line and charachter number, source and binary code sizes and source to binary ratio. Also from there you can zoon text. This feature can be accesed with pich gesture on touchpad or Ctrl+mouse wheel.</p>
+		<h3 id="panels">Panels</h3>
+		<p> Besides code editor you also have access to 3 panels from View menu.</p>
+		<p><b>OpCode</b> panel is visible by default. It shows hexadecimal representations of binary code generated after compiling your program. It updates live with every changed line. In some situations* it will show you the address of current line.<span class="note">* see <a href="#directives" class="smoothScroll">Directives</a></span></p>
+		<p>You can have access to <b>Errors</b> panel from View menu as well as from status bar. It shows all errors in you code. Double click on the line will bring you to part of code, where it was made.</p>
+		<p><b>Symbols</b> panel shows you list of all symbols(Variables, Labels, Procedures) with some additional informaion(Address, Line number, Type). Double click on any symbol will also bring you to its definition.</p>
+		<h2 id="example">Example</h2>
+		<p>You can find more examples in examples/ folder. Basic 'Hello world' example:</p>
+		<pre class="code"><font style="font-family: Courier New, monospace; font-size: 9,75pt; line-height: 14px;"><font style="color:#0000ff;font-weight:bold;">org</font><font style="color:#000000;"> </font><font style="color:#8b008b;">100h</font><font style="color:#008000;font-style:oblique;">
+
+; prit line</font><font style="color:#0000ff;font-weight:bold;">
+mov</font><font style="color:#000000;"> </font><font style="color:#800000;">ah</font><font style="color:#000000;">, </font><font style="color:#8b008b;">9</font><font style="color:#0000ff;font-weight:bold;">
+lea</font><font style="color:#000000;"> </font><font style="color:#800000;">dx</font><font style="color:#000000;">, msg</font><font style="color:#0000ff;font-weight:bold;">
+int</font><font style="color:#000000;"> </font><font style="color:#8b008b;">21h</font><font style="color:#008000;font-style:oblique;">
+
+; exit</font><font style="color:#0000ff;font-weight:bold;">
+mov</font><font style="color:#000000;"> </font><font style="color:#800000;">ax</font><font style="color:#000000;">, </font><font style="color:#8b008b;">0x4c00</font><font style="color:#0000ff;font-weight:bold;">
+int</font><font style="color:#000000;"> </font><font style="color:#8b008b;">21h</font><font style="color:#000000;">
+
+msg  </font><font style="color:#0000ff;font-weight:bold;">db</font><font style="color:#000000;"> </font><font style="color:#ff8c00;">'Hello world!'</font><font style="color:#000000;">
+     </font><font style="color:#0000ff;font-weight:bold;">db</font><font style="color:#000000;"> </font><font style="color:#8b008b;">10</font><font style="color:#000000;">
+     </font><font style="color:#0000ff;font-weight:bold;">db</font><font style="color:#000000;"> </font><font style="color:#ff8c00;">'$'</font></font></pre>
+	 <p>&nbsp;</p>
+	</body>
+</html>

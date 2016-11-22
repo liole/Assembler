@@ -1,0 +1,5 @@
+@echo off
+CLS
+PRINTINT
+PAUSE
+EXIT
